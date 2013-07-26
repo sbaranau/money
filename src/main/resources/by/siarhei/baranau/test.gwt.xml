@@ -17,7 +17,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='by.siarhei.baranau.client.test' />
+  <entry-point class='by.siarhei.baranau.client.Test' />
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
