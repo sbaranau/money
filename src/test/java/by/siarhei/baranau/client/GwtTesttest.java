@@ -1,6 +1,5 @@
 package by.siarhei.baranau.client;
 
-import by.siarhei.baranau.shared.FieldVerifier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
