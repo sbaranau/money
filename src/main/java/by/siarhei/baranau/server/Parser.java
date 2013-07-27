@@ -27,7 +27,7 @@ public class Parser {
             SAXParser saxParser = factory.newSAXParser();
 
             DefaultHandler handler = new DefaultHandler() {
-
+                Money money = null;
                 boolean bankStart = false;
                 boolean bankId = false;
                 boolean date = false;
@@ -54,11 +54,8 @@ public class Parser {
                     if (qName.equalsIgnoreCase("date")) {
                         date = true;
                     }
-                    if (qName.equalsIgnoreCase("bank-id")) {
-                        time = true;
-                    }
                     if (qName.equalsIgnoreCase("time")) {
-                        bankStart = true;
+                        time = true;
                     }
                     if (qName.equalsIgnoreCase("usd")) {
                         usd = true;
@@ -69,7 +66,12 @@ public class Parser {
                     if (qName.equalsIgnoreCase("rur")) {
                         rur = true;
                     }
-
+                    if (qName.equalsIgnoreCase("sell")) {
+                        sell = true;
+                    }
+                    if (qName.equalsIgnoreCase("buy")) {
+                        buy = true;
+                    }
 
                 }
 
@@ -86,30 +88,23 @@ public class Parser {
 
                     System.out.println(new String(ch, start, length));
 
-                    Money money = null;
+
                     if (bankStart) {
-                        System.out.println("start");
                         money = new Money();
                         bankStart = false;
                     }
 
                     if (bankId) {
-                        System.out.println("BankId : "
-                                + new String(ch, start, length));
                         money.setBankId(new String(ch, start, length));
                         bankId = false;
                     }
 
                     if (date) {
-                        System.out.println("Date : "
-                                + new String(ch, start, length));
                         money.setDate(new String(ch, start, length));
                         date = false;
                     }
 
                     if (time) {
-                        System.out.println("time : "
-                                + new String(ch, start, length));
                         money.setTime(new String(ch, start, length));
                         time = false;
                     }

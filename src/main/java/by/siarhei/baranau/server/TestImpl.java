@@ -44,28 +44,7 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             URL url =  new URL(URL_OBMENNIK);
             URLConnection conn = url.openConnection();
             InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            File outDir = new File("src/main/webapp/resources/archive");
-            File outFile = new File(outDir + File.separator + new SimpleDateFormat("yyyyMMddHH")
-                    .format(new Date()) + ".xml");
-
             Parser.parseXml(inputStreamReader);
-            if (!outDir.exists()) {
-                outDir.mkdirs();
-            }
-            if (!outFile.exists()) {
-                outFile.createNewFile();
-            }
-            PrintWriter out = new PrintWriter(outFile.getAbsoluteFile());
-            String fileLine = "";
-            System.out.println(outFile.getAbsoluteFile());
-            while ((fileLine = bufferedReader.readLine()) != null) {
-                System.out.println(fileLine);
-                out.println(fileLine);
-            }
-            bufferedReader.close();
-            out.close();
-
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
