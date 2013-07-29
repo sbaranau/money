@@ -1,7 +1,5 @@
 package by.siarhei.baranau.client;
 
-import by.siarhei.baranau.server.PriceNotEvalExp;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -10,5 +8,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("greet")
 public interface ITest extends RemoteService {
-    MoneyPrice[] getPrices(String[] symbols);
+    MoneyPrice[] getPrices(String[] symbols) throws PriceNotEvalExp;
 }

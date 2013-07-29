@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ public class Test implements EntryPoint {
     private Label lastUpdatedLabel = new Label();
     private ArrayList<String> moneyList = new ArrayList<String>();
     private static final int REFRESH_INTERVAL = 5000;
+    private Label errorMsgLabel = new Label();
 
     public void onModuleLoad() {
 
@@ -58,8 +60,10 @@ public class Test implements EntryPoint {
         });
 
         addPanel.add(newSymbolTextBox);
+        errorMsgLabel.setStyleName("errorMessage");
         addPanel.add(addButton);
-
+        errorMsgLabel.setVisible(false);
+        mainPanel.add(errorMsgLabel);
         mainPanel.add(stocksFlexTable);
         mainPanel.add(addPanel);
         mainPanel.add(lastUpdatedLabel);
@@ -113,7 +117,15 @@ public class Test implements EntryPoint {
         }
         AsyncCallback<MoneyPrice[]> callback = new AsyncCallback<MoneyPrice[]>() {
             public void onFailure(Throwable caught) {
-                // do something with errors
+                String details = caught.getMessage();
+                if (caught instanceof PriceNotEvalExp) {
+                    details = "Price for " + ((PriceNotEvalExp) caught).getSymbol() + "not found";
+                }
+                if (caught instanceof IOException) {
+                    details = "Service is not available. Try Later";
+                }
+                errorMsgLabel.setText("Error: " + details);
+                errorMsgLabel.setVisible(true);
             }
             public void onSuccess(MoneyPrice[] result) {
                 updateTable(result);
@@ -145,5 +157,6 @@ public class Test implements EntryPoint {
             stocksFlexTable.setText(row, 1, priceText);
             stocksFlexTable.setText(row, 2, changeText + " (" + changePercentText + "%)");
         }
+        errorMsgLabel.setVisible(false);
     }
 }

@@ -1,4 +1,4 @@
-package by.siarhei.baranau.server;
+package by.siarhei.baranau.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
