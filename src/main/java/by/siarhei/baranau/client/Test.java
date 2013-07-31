@@ -29,7 +29,7 @@ public class Test implements EntryPoint {
     private Button addButton = new Button("Add");
     private Label lastUpdatedLabel = new Label();
     private ArrayList<String> moneyList = new ArrayList<String>();
-    private static final int REFRESH_INTERVAL = 5000;
+    private static final int REFRESH_INTERVAL = 50000;
     private Label errorMsgLabel = new Label();
 
     public void onModuleLoad() {

@@ -3,13 +3,11 @@ package by.siarhei.baranau.server;
 import by.siarhei.baranau.client.ITest;
 import by.siarhei.baranau.client.MoneyPrice;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -46,8 +44,9 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             URL url =  new URL(URL_OBMENNIK);
             URLConnection conn = url.openConnection();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            File outDir = new File("src/resources/archive");
-            File outFile = new File(outDir + File.separator + new Date().getTime() + ".xml");
+            File outDir = new File("src/main/webapp/resources/archive");
+            File outFile = new File(outDir + File.separator + new SimpleDateFormat("yyyyMMddHH")
+                    .format(new Date()) + ".xml");
 
             if (!outDir.exists()) {
                 outDir.mkdirs();
@@ -55,6 +54,15 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             if (!outFile.exists()) {
                 outFile.createNewFile();
             }
+            PrintWriter out = new PrintWriter(outFile.getAbsoluteFile());
+            String fileLine = "";
+            System.out.println(outFile.getAbsoluteFile());
+            while ((fileLine = bufferedReader.readLine()) != null) {
+                System.out.println(fileLine);
+                out.println(fileLine);
+            }
+            bufferedReader.close();
+            out.close();
 
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
