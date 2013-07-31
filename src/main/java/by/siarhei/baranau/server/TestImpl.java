@@ -46,8 +46,8 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             URL url =  new URL(URL_OBMENNIK);
             URLConnection conn = url.openConnection();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            File outDir = new File("resources/archiv/");
-            File outFile = new File(outDir + File.separator + Calendar.DATE);
+            File outDir = new File("src/resources/archive");
+            File outFile = new File(outDir + File.separator + new Date().getTime() + ".xml");
 
             if (!outDir.exists()) {
                 outDir.mkdirs();
