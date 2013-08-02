@@ -43,11 +43,13 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
         try {
             URL url =  new URL(URL_OBMENNIK);
             URLConnection conn = url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             File outDir = new File("src/main/webapp/resources/archive");
             File outFile = new File(outDir + File.separator + new SimpleDateFormat("yyyyMMddHH")
                     .format(new Date()) + ".xml");
 
+            Parser.parseXml(inputStreamReader);
             if (!outDir.exists()) {
                 outDir.mkdirs();
             }
