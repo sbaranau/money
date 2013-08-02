@@ -1,5 +1,7 @@
 package by.siarhei.baranau.server;
 
+import by.siarhei.baranau.server.DB.Dbmanager;
+import by.siarhei.baranau.server.Entity.Money;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -127,6 +129,12 @@ public class ObmennikHandler extends DefaultHandler {
             System.out.println("SELL: " + new String(ch, start, length));
             money.setSellPrice(new BigDecimal(new String(ch, start, length)));
             sell = false;
+        }
+        if (bankEnd) {
+            System.out.println("Save in Db: ");
+            Dbmanager dbmanager = new Dbmanager();
+            dbmanager.saveInBase(money);
+            bankEnd = false;
         }
 
     }

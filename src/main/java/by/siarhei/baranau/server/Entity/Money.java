@@ -1,4 +1,4 @@
-package by.siarhei.baranau.server;
+package by.siarhei.baranau.server.Entity;
 
 import java.math.BigDecimal;
 

@@ -33,7 +33,6 @@ public class Parser {
 
             saxParser.parse(is, handler);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
