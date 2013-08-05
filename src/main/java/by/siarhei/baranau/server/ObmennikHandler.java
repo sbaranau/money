@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,15 +49,6 @@ public class ObmennikHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("time")) {
             time = true;
         }
-        if (qName.equalsIgnoreCase("usd")) {
-            usd = true;
-        }
-        if (qName.equalsIgnoreCase("eur")) {
-            eur = true;
-        }
-        if (qName.equalsIgnoreCase("rur")) {
-            rur = true;
-        }
         if (qName.equalsIgnoreCase("sell")) {
             sell = true;
         }
@@ -71,9 +63,34 @@ public class ObmennikHandler extends DefaultHandler {
             throws SAXException {
 
         System.out.println("End Element :" + qName);
-        if (qName.equalsIgnoreCase("bank-id")) {
-            bankEnd = true;
-            System.out.println("End Bank");
+        try {
+            if (qName.equalsIgnoreCase("usd")) {
+                System.out.println("Save in Db USD: ");
+                Dbmanager dbmanager = new Dbmanager();
+                System.out.println(money.getDate() + money.getName());
+                money.setName("USD");
+                dbmanager.saveInBase(money);
+                bankEnd = true;
+                System.out.println("End USD");
+            } else if (qName.equalsIgnoreCase("eur")) {
+                System.out.println("Save in Db EUR ");
+                Dbmanager dbmanager = new Dbmanager();
+                System.out.println(money.getDate() + money.getName());
+                money.setName("EUR");
+                dbmanager.saveInBase(money);
+                bankEnd = true;
+                System.out.println("End EUR");
+            } else if (qName.equalsIgnoreCase("rur")) {
+                System.out.println("Save in Db RUR ");
+                Dbmanager dbmanager = new Dbmanager();
+                System.out.println(money.getDate() + money.getName());
+                money.setName("RUR");
+                dbmanager.saveInBase(money);
+                bankEnd = true;
+                System.out.println("End RUR");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
@@ -82,60 +99,53 @@ public class ObmennikHandler extends DefaultHandler {
             throws SAXException {
 
         System.out.println(new String(ch, start, length));
+        String value = "";
+        try {
+            if (bankStart) {
+                money = new Money();
+                bankStart = false;
+            }
 
+            if (bankId) {
+                value = new String(ch, start, length);
+                money.setBankId(Integer.parseInt(value));
+                bankId = false;
+            }
 
-        if (bankStart) {
-            money = new Money();
-            bankStart = false;
-        }
+            if (date) {
+                value = new String(ch, start, length);
+                money.setDate(Integer.parseInt(value.replace("-", "")));
+                date = false;
+            }
 
-        if (bankId) {
-            money.setBankId(new String(ch, start, length));
-            bankId = false;
-        }
-
-        if (date) {
-            money.setDate(new String(ch, start, length));
-            date = false;
-        }
-
-        if (time) {
-            money.setTime(new String(ch, start, length));
-            time = false;
-        }
-        if (usd) {
-            System.out.println("usd : ");
-
-            money.setName("USD");
-            usd = false;
-        }
-        if (eur) {
-            System.out.println("eur : ");
-
-            money.setName("EUR");
-            eur = false;
-        }
-        if (rur) {
-            System.out.println("RUR: ");
-            money.setName("RUR");
-            rur = false;
-        }
-        if (buy) {
-            System.out.println("BUY: " + new String(ch, start, length));
-            money.setBuyPrice(new BigDecimal(new String(ch, start, length)));
-            buy = false;
-        }
-        if (sell) {
-            System.out.println("SELL: " + new String(ch, start, length));
-            money.setSellPrice(new BigDecimal(new String(ch, start, length)));
-            sell = false;
+            if (time) {
+                value = new String(ch, start, length);
+                money.setTime(Integer.parseInt(value.replace(":", "")));
+                time = false;
+            }
+            if (buy) {
+                money.setBuyPrice(new BigDecimal(new String(ch, start, length)));
+                buy = false;
+            }
+            if (sell) {
+                money.setSellPrice(new BigDecimal(new String(ch, start, length)));
+                sell = false;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         if (bankEnd) {
-            System.out.println("Save in Db: ");
-            Dbmanager dbmanager = new Dbmanager();
-            dbmanager.saveInBase(money);
+            System.out.println("Save in Db need ");
             bankEnd = false;
         }
 
+    }
+
+    private String normalise(String value) {
+        if (value != null) {
+            return value;
+        } else {
+            return "";
+        }
     }
 }

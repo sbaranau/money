@@ -11,9 +11,9 @@ import java.math.BigDecimal;
  */
 public class Money {
 
-    private String bankId;
-    private String date;
-    private String time;
+    private int bankId;
+    private int date;
+    private int time;
     private String name;
     private BigDecimal buyPrice;
     private BigDecimal sellPrice;
@@ -45,27 +45,27 @@ public class Money {
         this.sellPrice = sellPrice;
     }
 
-    public String getBankId() {
+    public int getBankId() {
         return bankId;
     }
 
-    public void setBankId(String bankId) {
+    public void setBankId(int bankId) {
         this.bankId = bankId;
     }
 
-    public String getDate() {
+    public int getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(int date) {
         this.date = date;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 }
