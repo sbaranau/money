@@ -1,6 +1,6 @@
 package by.siarhei.baranau.server;
 
-import by.siarhei.baranau.client.ITest;
+import by.siarhei.baranau.client.IEntry;
 import by.siarhei.baranau.client.MoneyPrice;
 
 import java.io.*;
@@ -13,13 +13,14 @@ import java.util.Date;
 import java.util.Random;
 
 import by.siarhei.baranau.client.PriceNotEvalExp;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class TestImpl extends RemoteServiceServlet implements ITest {
+public class EntryImpl extends RemoteServiceServlet implements IEntry {
 
     private static final double MAX_PRICE = 100.0; // $100.00
     private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%

@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
-public class Test implements EntryPoint {
+public class Entry implements EntryPoint {
 
-    Logger logger = Logger.getLogger(Test.class.getName());
+    Logger logger = Logger.getLogger(Entry.class.getName());
     private VerticalPanel mainPanel = new VerticalPanel();
     private FlexTable stocksFlexTable = new FlexTable();
     private HorizontalPanel addPanel = new HorizontalPanel();
@@ -106,14 +106,14 @@ public class Test implements EntryPoint {
         refreshPrice();
     }
 
-    private ITestAsync moneyPriceSvc;
+    private IEntryAsync moneyPriceSvc;
 
     private void refreshPrice() {
 
 
         // lazy initialization of service proxy
         if (moneyPriceSvc == null) {
-            moneyPriceSvc = GWT.create(ITest.class);
+            moneyPriceSvc = GWT.create(IEntry.class);
         }
         AsyncCallback<MoneyPrice[]> callback = new AsyncCallback<MoneyPrice[]>() {
             public void onFailure(Throwable caught) {

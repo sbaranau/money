@@ -75,23 +75,10 @@
                     <execution>
                         <goals>
                             <goal>generateAsync</goal>
+                             <goal>compile</goal>
+                             <goal>test</goal>
                         </goals>
                     </execution>
-                     <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                     <execution>
-                        <goals>
-                           <goal>test</goal>
-                        </goals>
-                    </execution>
-                 <!--     <execution>
-                        <goals>
-                           <goal>i18n</goal>
-                        </goals>
-                    </execution> -->
                 </executions>
                 <!-- Plugin configuration. There are many available options, see
                   gwt-maven-plugin documentation at codehaus.org -->

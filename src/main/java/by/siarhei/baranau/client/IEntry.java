@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("greet")
-public interface ITest extends RemoteService {
-    MoneyPrice[] getPrices(String[] symbols) throws PriceNotEvalExp;
+public interface IEntry extends RemoteService {
+
+	MoneyPrice[] getPrices(String[] symbols) throws PriceNotEvalExp;
 }
