@@ -39,10 +39,16 @@ public class Test implements EntryPoint {
                 refreshPrice();
             }
         };
-        stocksFlexTable.setText(0, 0, "Symbol");
-        stocksFlexTable.setText(0, 1, "Price");
-        stocksFlexTable.setText(0, 2, "Change");
-        stocksFlexTable.setText(0, 3, "Remove");
+        stocksFlexTable.setText(0, 0, "Bank");
+        stocksFlexTable.setText(0, 1, "USD buy");
+        stocksFlexTable.setText(0, 2, "USD sell");
+        stocksFlexTable.setText(0, 3, "Change");
+        stocksFlexTable.setText(0, 4, "EUR buy");
+        stocksFlexTable.setText(0, 5, "EUR sell");
+        stocksFlexTable.setText(0, 6, "Change");
+        stocksFlexTable.setText(0, 7, "RUR buy");
+        stocksFlexTable.setText(0, 8, "RUR sell");
+        stocksFlexTable.setText(0, 9, "Change");
 
         addButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
