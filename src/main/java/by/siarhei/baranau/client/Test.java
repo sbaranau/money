@@ -86,7 +86,7 @@ public class Test implements EntryPoint {
         newSymbolTextBox.setFocus(true);
         // symbol must be 3 chars that are numbers, letters, or dots
         if (!symbol.matches("^[a-zA-Z\\.]{3}$")) {
-            Window.alert("'" + symbol + "' is not a valid money.");
+            Window.alert("'" + symbol + "' is not a valid bank.");
             newSymbolTextBox.selectAll();
             return;
         }
@@ -108,7 +108,7 @@ public class Test implements EntryPoint {
                 stocksFlexTable.removeRow(removedIndex + 1);
             }
         });
-        stocksFlexTable.setWidget(row, 3, removeStock);
+        stocksFlexTable.setWidget(row, 10, removeStock);
         refreshPrice();
     }
 

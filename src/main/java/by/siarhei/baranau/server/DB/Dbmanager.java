@@ -1,9 +1,9 @@
 package by.siarhei.baranau.server.DB;
 
+import by.siarhei.baranau.client.MoneyPrice;
 import by.siarhei.baranau.server.Entity.Money;
 
 import java.sql.*;
-import java.sql.PreparedStatement;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,19 +16,24 @@ public class Dbmanager {
 
     Connection connection = null;
     PreparedStatement preparedStatement = null;
-    public Dbmanager() {
+    public Dbmanager(int step) {
         try {
             this.connection = Connector.createConnection();
-            String sqlInsert = "INSERT INTO PRICE " +
+            String sql = "";
+            if (step == 1) {
+            	sql = "INSERT INTO PRICE " +
                     "(bankId,date,time,moneyName,sell,buy) " +
                     "VALUES (?,?,?,?,?,?) ";
-            preparedStatement = connection.prepareStatement(sqlInsert);
+            } else if (step == 2) {
+            	sql = "SELECT * FROM PRICE WHERE bankId=?";
+            }
+            preparedStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public ResultSet getDate (){
+    public MoneyPrice getDate (String bank){
         return  null;
     }
     public int saveInBase(Money money) throws SQLException {

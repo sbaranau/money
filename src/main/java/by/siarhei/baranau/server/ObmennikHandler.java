@@ -66,7 +66,7 @@ public class ObmennikHandler extends DefaultHandler {
         try {
             if (qName.equalsIgnoreCase("usd")) {
                 System.out.println("Save in Db USD: ");
-                Dbmanager dbmanager = new Dbmanager();
+                Dbmanager dbmanager = new Dbmanager(1);
                 System.out.println(money.getDate() + money.getName());
                 money.setName("USD");
                 dbmanager.saveInBase(money);
@@ -74,7 +74,7 @@ public class ObmennikHandler extends DefaultHandler {
                 System.out.println("End USD");
             } else if (qName.equalsIgnoreCase("eur")) {
                 System.out.println("Save in Db EUR ");
-                Dbmanager dbmanager = new Dbmanager();
+                Dbmanager dbmanager = new Dbmanager(1);
                 System.out.println(money.getDate() + money.getName());
                 money.setName("EUR");
                 dbmanager.saveInBase(money);
@@ -82,7 +82,7 @@ public class ObmennikHandler extends DefaultHandler {
                 System.out.println("End EUR");
             } else if (qName.equalsIgnoreCase("rur")) {
                 System.out.println("Save in Db RUR ");
-                Dbmanager dbmanager = new Dbmanager();
+                Dbmanager dbmanager = new Dbmanager(1);
                 System.out.println(money.getDate() + money.getName());
                 money.setName("RUR");
                 dbmanager.saveInBase(money);

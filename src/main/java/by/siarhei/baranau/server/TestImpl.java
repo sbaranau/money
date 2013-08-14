@@ -8,12 +8,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
 import by.siarhei.baranau.client.PriceNotEvalExp;
+import by.siarhei.baranau.server.DB.Connector;
+import by.siarhei.baranau.server.DB.Dbmanager;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.mysql.jdbc.Connection;
 
 /**
  * The server side implementation of the RPC service.
@@ -25,14 +30,15 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
     private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
     private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
-    public MoneyPrice[] getPrices(String[] symbols) throws PriceNotEvalExp {
+    public MoneyPrice[] getPrices(String[] bank) throws PriceNotEvalExp {
         Random rnd = new Random();
-        MoneyPrice[] prices = new MoneyPrice[symbols.length];
-        for (int i = 0; i < symbols.length; i++) {
-            if (symbols[i].equals("ERR")) throw new PriceNotEvalExp("Err");
-            double price = rnd.nextDouble() * MAX_PRICE;
+        ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
+        for (int i = 0; i < bank.length; i++) {
+        	Dbmanager dbmanager = new Dbmanager(2);
+        	dbmanager.getDate(bank[i]);
+        	double price = rnd.nextDouble() * MAX_PRICE;
             double change = price * MAX_PRICE_CHANGE * (rnd.nextDouble() * 2f - 1f);
-            prices [i] = new MoneyPrice(symbols[i], price, change);
+            prices [i] = new MoneyPrice(bank[i], price, change);
         }
         getXml();
         return prices;
@@ -48,5 +54,11 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+    
+    private MoneyPrice getPriceFromBd (String bank) {
+		Connection connection = 
+    	return null;
+    
     }
 }
