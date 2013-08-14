@@ -75,16 +75,8 @@
                     <execution>
                         <goals>
                             <goal>generateAsync</goal>
-                        </goals>
-                    </execution>
-                     <execution>
-                        <goals>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                     <execution>
-                        <goals>
-                           <goal>test</goal>
+                            <goal>test</goal>
                         </goals>
                     </execution>
                  <!--     <execution>
