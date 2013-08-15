@@ -25,7 +25,7 @@ public class Dbmanager {
                     "(bankId,date,time,moneyName,sell,buy) " +
                     "VALUES (?,?,?,?,?,?) ";
             } else if (step == 2) {
-            	sql = "SELECT * FROM PRICE WHERE bankId=?";
+            	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY DATE DESC";
             }
             preparedStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
@@ -33,8 +33,34 @@ public class Dbmanager {
         }
     }
 
-    public MoneyPrice getDate (String bank){
-        return  null;
+    public MoneyPrice getDate (String bank) throws SQLException{
+        MoneyPrice moneyPrice = null;
+        Statement statement = null;
+        ResultSet rs = null; 
+        try{
+             System.out.println("Get prices for: " + bank);
+             preparedStatement.setString(1, bank);
+             rs = preparedStatement.executeQuery();
+             int count = 0;
+             while (rs.next()) {
+            	 count ++;
+            	 moneyPrice.setPriceEurSell(rs.getBigDecimal(""));
+            	 if (count > 2) {
+            		 break;
+            	 }
+             }
+             
+         } catch (SQLException e) {
+        		 e.printStackTrace();
+         } finally {
+        	 if (statement != null) {
+                 statement.close();
+             }
+        	 if (rs != null) {
+                 rs.close();
+             }
+         }
+    	return  null;
     }
     public int saveInBase(Money money) throws SQLException {
         Statement statement = null;

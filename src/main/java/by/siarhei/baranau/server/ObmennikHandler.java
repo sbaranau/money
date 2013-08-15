@@ -19,6 +19,7 @@ import java.sql.SQLException;
 public class ObmennikHandler extends DefaultHandler {
 
     Money money = null;
+    String moneyName = "";
     boolean bankStart = false;
     boolean bankEnd = false;
     boolean bankId = false;
@@ -65,31 +66,16 @@ public class ObmennikHandler extends DefaultHandler {
         System.out.println("End Element :" + qName);
         try {
             if (qName.equalsIgnoreCase("usd")) {
-                System.out.println("Save in Db USD: ");
-                Dbmanager dbmanager = new Dbmanager(1);
-                System.out.println(money.getDate() + money.getName());
-                money.setName("USD");
-                dbmanager.saveInBase(money);
                 bankEnd = true;
                 System.out.println("End USD");
             } else if (qName.equalsIgnoreCase("eur")) {
-                System.out.println("Save in Db EUR ");
-                Dbmanager dbmanager = new Dbmanager(1);
-                System.out.println(money.getDate() + money.getName());
-                money.setName("EUR");
-                dbmanager.saveInBase(money);
                 bankEnd = true;
                 System.out.println("End EUR");
             } else if (qName.equalsIgnoreCase("rur")) {
-                System.out.println("Save in Db RUR ");
-                Dbmanager dbmanager = new Dbmanager(1);
-                System.out.println(money.getDate() + money.getName());
-                money.setName("RUR");
-                dbmanager.saveInBase(money);
                 bankEnd = true;
                 System.out.println("End RUR");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

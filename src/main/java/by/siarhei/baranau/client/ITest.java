@@ -1,5 +1,7 @@
 package by.siarhei.baranau.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,5 +10,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("greet")
 public interface ITest extends RemoteService {
-    MoneyPrice[] getPrices(String[] symbols) throws PriceNotEvalExp;
+    ArrayList<MoneyPrice> getPrices(String[] symbols) throws PriceNotEvalExp;
 }

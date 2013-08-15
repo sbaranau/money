@@ -14,35 +14,14 @@ public class Money {
     private int bankId;
     private int date;
     private int time;
-    private String name;
-    private BigDecimal buyPrice;
-    private BigDecimal sellPrice;
+    private BigDecimal buyUSDPrice;
+    private BigDecimal sellUSDPrice;
+    private BigDecimal buyEURPrice;
+    private BigDecimal sellEURPrice;
+    private BigDecimal buyRURPrice;
+    private BigDecimal sellRURPrice;
 
     public Money() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getBuyPrice() {
-        return buyPrice;
-    }
-
-    public void setBuyPrice(BigDecimal buyPrice) {
-        this.buyPrice = buyPrice;
-    }
-
-    public BigDecimal getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(BigDecimal sellPrice) {
-        this.sellPrice = sellPrice;
     }
 
     public int getBankId() {
@@ -68,4 +47,53 @@ public class Money {
     public void setTime(int time) {
         this.time = time;
     }
+
+	public BigDecimal getBuyUSDPrice() {
+		return buyUSDPrice;
+	}
+
+	public void setBuyUSDPrice(BigDecimal buyUSDPrice) {
+		this.buyUSDPrice = buyUSDPrice;
+	}
+
+	public BigDecimal getSellUSDPrice() {
+		return sellUSDPrice;
+	}
+
+	public void setSellUSDPrice(BigDecimal sellUSDPrice) {
+		this.sellUSDPrice = sellUSDPrice;
+	}
+
+	public BigDecimal getBuyEURPrice() {
+		return buyEURPrice;
+	}
+
+	public void setBuyEURPrice(BigDecimal buyEURPrice) {
+		this.buyEURPrice = buyEURPrice;
+	}
+
+	public BigDecimal getSellEURPrice() {
+		return sellEURPrice;
+	}
+
+	public void setSellEURPrice(BigDecimal sellEURPrice) {
+		this.sellEURPrice = sellEURPrice;
+	}
+
+	public BigDecimal getBuyRURPrice() {
+		return buyRURPrice;
+	}
+
+	public void setBuyRURPrice(BigDecimal buyRURPrice) {
+		this.buyRURPrice = buyRURPrice;
+	}
+
+	public BigDecimal getSellRURPrice() {
+		return sellRURPrice;
+	}
+
+	public void setSellRURPrice(BigDecimal sellRURPrice) {
+		this.sellRURPrice = sellRURPrice;
+	}
+
 }

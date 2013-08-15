@@ -30,15 +30,14 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
     private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
     private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
-    public MoneyPrice[] getPrices(String[] bank) throws PriceNotEvalExp {
+    public ArrayList<MoneyPrice> getPrices(String[] bank) throws PriceNotEvalExp {
         Random rnd = new Random();
         ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
         for (int i = 0; i < bank.length; i++) {
         	Dbmanager dbmanager = new Dbmanager(2);
-        	dbmanager.getDate(bank[i]);
+        	prices.add(dbmanager.getDate(bank[i]));
         	double price = rnd.nextDouble() * MAX_PRICE;
             double change = price * MAX_PRICE_CHANGE * (rnd.nextDouble() * 2f - 1f);
-            prices [i] = new MoneyPrice(bank[i], price, change);
         }
         getXml();
         return prices;
