@@ -44,7 +44,7 @@ public class Dbmanager {
              int count = 0;
              while (rs.next()) {
             	 count ++;
-            	 moneyPrice.setPriceEurSell(rs.getBigDecimal(""));
+            	// moneyPrice.setPriceEurSell(rs.getBigDecimal(""));
             	 if (count > 2) {
             		 break;
             	 }
@@ -62,17 +62,18 @@ public class Dbmanager {
          }
     	return  null;
     }
+    
     public int saveInBase(Money money) throws SQLException {
         Statement statement = null;
 
         try{
-            System.out.println(money.getBuyPrice() + money.getName());
+     /*       System.out.println(money.getBuyPrice() + money.getName());
             preparedStatement.setInt(1, money.getBankId());
             preparedStatement.setInt(2, money.getDate());
             preparedStatement.setInt(3, money.getTime());
             preparedStatement.setString(4, money.getName());
             preparedStatement.setBigDecimal(5, money.getSellPrice());
-            preparedStatement.setBigDecimal(6, money.getBuyPrice());
+            preparedStatement.setBigDecimal(6, money.getBuyPrice());*/
             boolean result = preparedStatement.execute();
         } catch (NumberFormatException e) {
             e.printStackTrace();

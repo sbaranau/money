@@ -50,6 +50,15 @@ public class ObmennikHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("time")) {
             time = true;
         }
+        if (qName.equalsIgnoreCase("usd")) {
+            usd = true;
+        }
+        if (qName.equalsIgnoreCase("eur")) {
+            eur = true;
+        }
+        if (qName.equalsIgnoreCase("rur")) {
+            rur = true;
+        }
         if (qName.equalsIgnoreCase("sell")) {
             sell = true;
         }
@@ -65,15 +74,9 @@ public class ObmennikHandler extends DefaultHandler {
 
         System.out.println("End Element :" + qName);
         try {
-            if (qName.equalsIgnoreCase("usd")) {
+            if (qName.equalsIgnoreCase("idbank")) {
                 bankEnd = true;
                 System.out.println("End USD");
-            } else if (qName.equalsIgnoreCase("eur")) {
-                bankEnd = true;
-                System.out.println("End EUR");
-            } else if (qName.equalsIgnoreCase("rur")) {
-                bankEnd = true;
-                System.out.println("End RUR");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,12 +113,28 @@ public class ObmennikHandler extends DefaultHandler {
                 time = false;
             }
             if (buy) {
-                money.setBuyPrice(new BigDecimal(new String(ch, start, length)));
+                if (usd) {
+                	money.setBuyUSDPrice(new BigDecimal(new String(ch, start, length)));
+                } else if (eur) {
+                	money.setBuyEURPrice(new BigDecimal(new String(ch, start, length)));
+                }else if (rur) {
+                	money.setBuyRURPrice(new BigDecimal(new String(ch, start, length)));
+                }
                 buy = false;
             }
             if (sell) {
-                money.setSellPrice(new BigDecimal(new String(ch, start, length)));
-                sell = false;
+            	 if (usd) {
+                 	money.setSellUSDPrice(new BigDecimal(new String(ch, start, length)));
+                 	usd = false;
+                 } else if (eur) {
+                 	money.setSellEURPrice(new BigDecimal(new String(ch, start, length)));
+                 	eur = false;
+                 }else if (rur) {
+                 	money.setSellRURPrice(new BigDecimal(new String(ch, start, length)));
+                 	rur = false;
+                 	
+                 }
+                 sell = false;
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

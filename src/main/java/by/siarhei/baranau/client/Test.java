@@ -116,12 +116,11 @@ public class Test implements EntryPoint {
 
     private void refreshPrice() {
 
-
         // lazy initialization of service proxy
         if (moneyPriceSvc == null) {
             moneyPriceSvc = GWT.create(ITest.class);
         }
-        AsyncCallback<MoneyPrice[]> callback = new AsyncCallback<MoneyPrice[]>() {
+        AsyncCallback <ArrayList> callback = new AsyncCallback<ArrayList>() {
             public void onFailure(Throwable caught) {
                 String details = caught.getMessage();
                 if (caught instanceof PriceNotEvalExp) {
@@ -133,36 +132,58 @@ public class Test implements EntryPoint {
                 errorMsgLabel.setText("Error: " + details);
                 errorMsgLabel.setVisible(true);
             }
-            public void onSuccess(MoneyPrice[] result) {
-                updateTable(result);
-            }
+			public void onSuccess(ArrayList arg0) {
+				// TODO Auto-generated method stub
+				updateTable(arg0);
+			}
 
         };
 
-        moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);
+  //      moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);
         // change the last update timestamp
         lastUpdatedLabel.setText("Last update : " +
                 DateTimeFormat.getMediumDateTimeFormat().format(new Date()));
     }
 
-    private void updateTable(MoneyPrice[] result) {
+    private void updateTable(ArrayList<MoneyPrice> result) {
 
-        for (MoneyPrice price : result) {
-            if (!moneyList.contains(price.getSymbol())) {
+        NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
+
+    	for (MoneyPrice bankPrice : result) {
+            if (!moneyList.contains(bankPrice.getBankName())) {
                 continue;
             }
-            int row = moneyList.indexOf(price.getSymbol()) + 1;
+            int row = moneyList.indexOf(bankPrice.getBankName()) + 1;
 
             // apply nice formatting to price and change
-            String priceText = NumberFormat.getFormat("#,##0.00").format(price.getPrice());
-            NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
-            String changeText = changeFormat.format(price.getChange());
-            String changePercentText = changeFormat.format(price.getChangePercent());
+            String priceUSDBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdBuy());
+            String priceUSDSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdSell());
+            String changeUSD = changeFormat.format(bankPrice.getChangeUsd());
+            String changeUsdPercent = changeFormat.format(bankPrice.getChangePercentUsd());
+
+            String priceEurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurBuy());
+            String priceEurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurSell());
+            String changeEur = changeFormat.format(bankPrice.getChangeEur());
+            String changeEurPercent = changeFormat.format(bankPrice.getChangePercentEur());
+            
+            String priceRurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurBuy());
+            String priceRurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurSell());
+            String changeRur = changeFormat.format(bankPrice.getChangeRur());
+            String changeRurPercent = changeFormat.format(bankPrice.getChangePercentRur());
 
             // update the watch list with the new values
-            stocksFlexTable.setText(row, 1, priceText);
-            stocksFlexTable.setText(row, 2, changeText + " (" + changePercentText + "%)");
-        }
+            stocksFlexTable.setText(row, 1, priceUSDBuy);
+            stocksFlexTable.setText(row, 2, priceUSDSell);
+            stocksFlexTable.setText(row, 3, changeUSD + " (" + changeUsdPercent + "%)");
+
+            stocksFlexTable.setText(row, 4, priceEurBuy);
+            stocksFlexTable.setText(row, 5, priceEurSell);
+            stocksFlexTable.setText(row, 6, changeEur + " (" + changeEurPercent + "%)");
+
+            stocksFlexTable.setText(row, 7, priceRurBuy);
+            stocksFlexTable.setText(row, 8, priceRurSell);
+            stocksFlexTable.setText(row, 9, changeRur + " (" + changeRurPercent + "%)");
+    	}
         errorMsgLabel.setVisible(false);
     }
 }

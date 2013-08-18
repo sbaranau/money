@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,7 +31,7 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
     private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
     private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
-    public ArrayList<MoneyPrice> getPrices(String[] bank) throws PriceNotEvalExp {
+    public ArrayList<MoneyPrice> getPrices(String[] bank) throws PriceNotEvalExp, SQLException {
         Random rnd = new Random();
         ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
         for (int i = 0; i < bank.length; i++) {
@@ -56,7 +57,7 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
     }
     
     private MoneyPrice getPriceFromBd (String bank) {
-		Connection connection = 
+		Connection connection;
     	return null;
     
     }

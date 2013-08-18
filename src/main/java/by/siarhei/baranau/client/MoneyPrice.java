@@ -142,5 +142,12 @@ public class MoneyPrice implements IsSerializable {
     public double getChangePercentRur() {
         return 10.0 * this.changeRur / this.priceRurBuy;
     }
+	public double getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(double bankName) {
+		this.bankName = bankName;
+	}
 
 }
