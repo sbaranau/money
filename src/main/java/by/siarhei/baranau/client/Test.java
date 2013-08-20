@@ -132,14 +132,14 @@ public class Test implements EntryPoint {
                 errorMsgLabel.setText("Error: " + details);
                 errorMsgLabel.setVisible(true);
             }
-			public void onSuccess(ArrayList arg0) {
+			public void onSuccess(ArrayList prices) {
 				// TODO Auto-generated method stub
-				updateTable(arg0);
+				updateTable(prices);
 			}
 
         };
 
-  //      moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);
+        moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);
         // change the last update timestamp
         lastUpdatedLabel.setText("Last update : " +
                 DateTimeFormat.getMediumDateTimeFormat().format(new Date()));
