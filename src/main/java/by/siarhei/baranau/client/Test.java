@@ -136,7 +136,6 @@ public class Test implements EntryPoint {
 				// TODO Auto-generated method stub
 				updateTable(prices);
 			}
-
         };
 
         moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);

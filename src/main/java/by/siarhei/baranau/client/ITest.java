@@ -11,5 +11,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("greet")
 public interface ITest extends RemoteService {
-    ArrayList<MoneyPrice> getPrices(String[] symbols) throws PriceNotEvalExp, SQLException;
+    ArrayList<MoneyPrice> getPrices(String[] symbols) throws PriceNotEvalExp;
 }

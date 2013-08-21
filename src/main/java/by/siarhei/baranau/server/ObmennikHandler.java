@@ -1,7 +1,9 @@
 package by.siarhei.baranau.server;
 
+import by.siarhei.baranau.client.MoneyPrice;
 import by.siarhei.baranau.server.DB.Dbmanager;
 import by.siarhei.baranau.server.Entity.Money;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -74,9 +76,9 @@ public class ObmennikHandler extends DefaultHandler {
 
         System.out.println("End Element :" + qName);
         try {
-            if (qName.equalsIgnoreCase("idbank")) {
-                bankEnd = true;
-                System.out.println("End USD");
+            if (qName.equalsIgnoreCase("bank-id")) {
+                Dbmanager dbmanager = new Dbmanager(2);
+                dbmanager.saveInBase(money);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,29 +114,28 @@ public class ObmennikHandler extends DefaultHandler {
                 money.setTime(Integer.parseInt(value.replace(":", "")));
                 time = false;
             }
+            if (sell) {
+           	 	if (usd) {
+                	money.setSellUSDPrice(new BigDecimal(new String(ch, start, length)));
+                } else if (eur) {
+                	money.setSellEURPrice(new BigDecimal(new String(ch, start, length)));
+                }else if (rur) {
+                	money.setSellRURPrice(new BigDecimal(new String(ch, start, length)));
+                }
+                sell = false;
+           }
             if (buy) {
                 if (usd) {
                 	money.setBuyUSDPrice(new BigDecimal(new String(ch, start, length)));
+                	usd = false;
                 } else if (eur) {
                 	money.setBuyEURPrice(new BigDecimal(new String(ch, start, length)));
+                	eur = false;
                 }else if (rur) {
                 	money.setBuyRURPrice(new BigDecimal(new String(ch, start, length)));
+                	rur = false;
                 }
                 buy = false;
-            }
-            if (sell) {
-            	 if (usd) {
-                 	money.setSellUSDPrice(new BigDecimal(new String(ch, start, length)));
-                 	usd = false;
-                 } else if (eur) {
-                 	money.setSellEURPrice(new BigDecimal(new String(ch, start, length)));
-                 	eur = false;
-                 }else if (rur) {
-                 	money.setSellRURPrice(new BigDecimal(new String(ch, start, length)));
-                 	rur = false;
-                 	
-                 }
-                 sell = false;
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

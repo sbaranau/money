@@ -22,8 +22,8 @@ public class Dbmanager {
             String sql = "";
             if (step == 1) {
             	sql = "INSERT INTO PRICE " +
-                    "(bankId,date,time,moneyName,sell,buy) " +
-                    "VALUES (?,?,?,?,?,?) ";
+                    "(bankId,date,time,sellusd,buyusd,selleur,buyeur,sellrur,buyrur) " +
+                    "VALUES (?,?,?,?,?,?,?,?,?) ";
             } else if (step == 2) {
             	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY DATE DESC";
             }
