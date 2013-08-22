@@ -26,6 +26,8 @@ public class Dbmanager {
                     "VALUES (?,?,?,?,?,?,?,?,?) ";
             } else if (step == 2) {
             	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY DATE DESC";
+            } else if (step == 3) {
+            	 sql = "SELECT bankId FROM PRICE WHERE bankId=? AND DATE=? AND TIME=?";
             }
             preparedStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
@@ -63,18 +65,24 @@ public class Dbmanager {
     	return  null;
     }
     
-    public int saveInBase(Money money) throws SQLException {
+    public boolean saveInBase(Money money) throws SQLException {
         Statement statement = null;
-
-        try{
-     /*       System.out.println(money.getBuyPrice() + money.getName());
+        boolean result = false;
+        if (dateExist(money)) {
+        	return false;
+        }
+        try {
+            System.out.println(money.getBankId() + money.getDate());
             preparedStatement.setInt(1, money.getBankId());
             preparedStatement.setInt(2, money.getDate());
             preparedStatement.setInt(3, money.getTime());
-            preparedStatement.setString(4, money.getName());
-            preparedStatement.setBigDecimal(5, money.getSellPrice());
-            preparedStatement.setBigDecimal(6, money.getBuyPrice());*/
-            boolean result = preparedStatement.execute();
+            preparedStatement.setBigDecimal(4, money.getSellUSDPrice());
+            preparedStatement.setBigDecimal(5, money.getBuyUSDPrice());
+            preparedStatement.setBigDecimal(6, money.getSellEURPrice());
+            preparedStatement.setBigDecimal(7, money.getBuyEURPrice());
+            preparedStatement.setBigDecimal(8, money.getSellRURPrice());
+            preparedStatement.setBigDecimal(9, money.getBuyRURPrice());
+            result = preparedStatement.execute();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -84,7 +92,34 @@ public class Dbmanager {
                 statement.close();
             }
         }
-        return 0;
+        return result;
     }
+    
+    private boolean dateExist(Money money) throws SQLException {
+    	Statement statement = null;
+        ResultSet rs = null;
+        try {
+	    	preparedStatement.setInt(1, money.getBankId());
+	        preparedStatement.setInt(2, money.getDate());
+	        preparedStatement.setInt(3, money.getTime());
+	        rs = preparedStatement.executeQuery();
+	        if (rs.next()) {
+	        	return true;
+	        } else {
+	        	return false;
+	        }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        	return false;
+        } finally {
+	       	 if (statement != null) {
+	             statement.close();
+	         }
+	    	 if (rs != null) {
+	             rs.close();
+	         }
+        }
+    }
+    
 
 }

@@ -77,7 +77,7 @@ public class ObmennikHandler extends DefaultHandler {
         System.out.println("End Element :" + qName);
         try {
             if (qName.equalsIgnoreCase("bank-id")) {
-                Dbmanager dbmanager = new Dbmanager(2);
+                Dbmanager dbmanager = new Dbmanager(1);
                 dbmanager.saveInBase(money);
             }
         } catch (Exception e) {
@@ -116,23 +116,23 @@ public class ObmennikHandler extends DefaultHandler {
             }
             if (sell) {
            	 	if (usd) {
-                	money.setSellUSDPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setSellUSDPrice(toBigDecimal(new String(ch, start, length)));
                 } else if (eur) {
-                	money.setSellEURPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setSellEURPrice(toBigDecimal(new String(ch, start, length)));
                 }else if (rur) {
-                	money.setSellRURPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setSellRURPrice(toBigDecimal(new String(ch, start, length)));
                 }
                 sell = false;
            }
             if (buy) {
                 if (usd) {
-                	money.setBuyUSDPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setBuyUSDPrice(toBigDecimal(new String(ch, start, length)));
                 	usd = false;
                 } else if (eur) {
-                	money.setBuyEURPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setBuyEURPrice(toBigDecimal(new String(ch, start, length)));
                 	eur = false;
                 }else if (rur) {
-                	money.setBuyRURPrice(new BigDecimal(new String(ch, start, length)));
+                	money.setBuyRURPrice(toBigDecimal(new String(ch, start, length)));
                 	rur = false;
                 }
                 buy = false;
@@ -153,5 +153,17 @@ public class ObmennikHandler extends DefaultHandler {
         } else {
             return "";
         }
+    }
+    
+    private BigDecimal toBigDecimal(String value) {
+    	if (value == null) {
+            return BigDecimal.ZERO;
+        }
+    	try {
+    		return new BigDecimal(value); 
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return BigDecimal.ZERO;
+    	}
     }
 }
