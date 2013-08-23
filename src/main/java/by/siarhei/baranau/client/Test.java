@@ -32,6 +32,7 @@ public class Test implements EntryPoint {
     private ArrayList<String> moneyList = new ArrayList<String>();
     private static final int REFRESH_INTERVAL = 50000;
     private Label errorMsgLabel = new Label();
+    final ListBox dropBox = new ListBox(false);
 
     public void onModuleLoad() {
 
