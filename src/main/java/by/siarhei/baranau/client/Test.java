@@ -15,6 +15,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -135,6 +136,7 @@ public class Test implements EntryPoint {
 			public void onSuccess(ArrayList prices) {
 				// TODO Auto-generated method stub
 				updateTable(prices);
+				System.out.println(prices.size());
 			}
         };
 
@@ -149,26 +151,27 @@ public class Test implements EntryPoint {
         NumberFormat changeFormat = NumberFormat.getFormat("+#,##0.00;-#,##0.00");
 
     	for (MoneyPrice bankPrice : result) {
-            if (!moneyList.contains(bankPrice.getBankName())) {
-                continue;
+            if (!moneyList.contains(String.valueOf(bankPrice.getBankName()))) {
+            	System.out.println("return");
+            	continue;
             }
-            int row = moneyList.indexOf(bankPrice.getBankName()) + 1;
+            int row = moneyList.indexOf(String.valueOf(bankPrice.getBankName())) + 1;
 
             // apply nice formatting to price and change
             String priceUSDBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdBuy());
             String priceUSDSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdSell());
             String changeUSD = changeFormat.format(bankPrice.getChangeUsd());
-            String changeUsdPercent = changeFormat.format(bankPrice.getChangePercentUsd());
+            String changeUsdPercent = changeFormat.format(bankPrice.getPriceUsdSell().divide(bankPrice.getChangeUsd(), 3, RoundingMode.HALF_UP));
 
             String priceEurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurBuy());
             String priceEurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurSell());
             String changeEur = changeFormat.format(bankPrice.getChangeEur());
-            String changeEurPercent = changeFormat.format(bankPrice.getChangePercentEur());
+            String changeEurPercent = changeFormat.format(bankPrice.getPriceEurSell().divide(bankPrice.getChangeEur(), 3, RoundingMode.HALF_UP));
             
             String priceRurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurBuy());
             String priceRurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurSell());
             String changeRur = changeFormat.format(bankPrice.getChangeRur());
-            String changeRurPercent = changeFormat.format(bankPrice.getChangePercentRur());
+            String changeRurPercent = changeFormat.format(bankPrice.getPriceRurSell().divide(bankPrice.getChangeRur(), 3, RoundingMode.HALF_UP));
 
             // update the watch list with the new values
             stocksFlexTable.setText(row, 1, priceUSDBuy);

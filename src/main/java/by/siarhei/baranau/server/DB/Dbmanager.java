@@ -64,14 +64,14 @@ public class Dbmanager {
                 	 previosRur = rs.getBigDecimal("sellrur");
                 	 previosUsd = rs.getBigDecimal("sellusd");
             	 }
-            	 moneyPrice.setChangeEur(moneyPrice.getPriceEurSell().subtract(previosEur));
-            	 moneyPrice.setChangeUsd(moneyPrice.getPriceUsdSell().subtract(previosUsd));
-            	 moneyPrice.setChangeRur(moneyPrice.getPriceRurSell().subtract(previosRur));
             	 if (count > 2) {
             		 break;
             	 }
              }
-             
+             moneyPrice.setChangeEur(moneyPrice.getPriceEurSell().subtract(previosEur));
+        	 moneyPrice.setChangeUsd(moneyPrice.getPriceUsdSell().subtract(previosUsd));
+        	 moneyPrice.setChangeRur(moneyPrice.getPriceRurSell().subtract(previosRur));
+             System.out.println(previosEur + moneyPrice.getPriceEurSell().toString());
          } catch (SQLException e) {
         		 e.printStackTrace();
          } finally {
