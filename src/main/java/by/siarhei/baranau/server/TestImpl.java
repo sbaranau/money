@@ -1,26 +1,19 @@
 package by.siarhei.baranau.server;
 
-import by.siarhei.baranau.client.ITest;
-import by.siarhei.baranau.client.MoneyPrice;
-
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.Hashtable;
 
+import by.siarhei.baranau.client.ITest;
+import by.siarhei.baranau.client.MoneyPrice;
 import by.siarhei.baranau.client.PriceNotEvalExp;
-import by.siarhei.baranau.server.DB.Connector;
 import by.siarhei.baranau.server.DB.Dbmanager;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.mysql.jdbc.Connection;
 
 /**
  * The server side implementation of the RPC service.
@@ -56,5 +49,10 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
+	public Hashtable<String, String> getBanks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 }

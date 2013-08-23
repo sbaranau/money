@@ -1,15 +1,13 @@
 package by.siarhei.baranau.server;
 
-import by.siarhei.baranau.client.MoneyPrice;
-import by.siarhei.baranau.server.DB.Dbmanager;
-import by.siarhei.baranau.server.Entity.Money;
+import java.math.BigDecimal;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
+import by.siarhei.baranau.server.DB.Dbmanager;
+import by.siarhei.baranau.server.Entity.Money;
 
 /**
  * Created with IntelliJ IDEA.

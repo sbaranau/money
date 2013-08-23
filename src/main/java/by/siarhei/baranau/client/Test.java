@@ -15,9 +15,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 
 public class Test implements EntryPoint {
@@ -34,6 +36,8 @@ public class Test implements EntryPoint {
     private Label errorMsgLabel = new Label();
     final ListBox dropBox = new ListBox(false);
 
+    private ITestAsync moneyPriceSvc;
+    
     public void onModuleLoad() {
 
         Timer refreshTimer = new Timer() {
@@ -66,8 +70,33 @@ public class Test implements EntryPoint {
             }
 
         });
+        createPriceService();
+        moneyPriceSvc.getBanks(new AsyncCallback<Hashtable<String, String>>() {
+            public void onFailure(Throwable caught) {
+                String details = caught.getMessage();
+                if (caught instanceof PriceNotEvalExp) {
+                    details = "Price for " + ((PriceNotEvalExp) caught).getSymbol() + "not found";
+                }
+                if (caught instanceof IOException) {
+                    details = "Service is not available. Try Later";
+                }
+                errorMsgLabel.setText("Error: " + details);
+                errorMsgLabel.setVisible(true);
+            }
+			public void onSuccess(Hashtable<String, String> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        
+        Hashtable banksList = getBanksList();
+        String[] listTypes = {"1", "2", "4"};
+        for (int i = 0; i < listTypes.length; i++) {
+          dropBox.addItem(listTypes[i], "" + i);
+        }
 
         addPanel.add(newSymbolTextBox);
+        addPanel.add(dropBox);
         errorMsgLabel.setStyleName("errorMessage");
         addPanel.add(addButton);
         errorMsgLabel.setVisible(false);
@@ -77,14 +106,13 @@ public class Test implements EntryPoint {
         mainPanel.add(lastUpdatedLabel);
 
         RootPanel.get("stockList").add(mainPanel);
-
         refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
-
         newSymbolTextBox.setFocus(true);
     }
 
     private void addMoney() {
-        final String symbol = newSymbolTextBox.getText().toUpperCase().trim();
+      //  final String symbol = newSymbolTextBox.getText().toUpperCase().trim();
+        final String symbol = String.valueOf(dropBox.getSelectedIndex());
         newSymbolTextBox.setFocus(true);
         // symbol must be 3 chars that are numbers, letters, or dots
      /*   if (!symbol.matches("^[a-zA-Z\\.]{3}$")) {
@@ -114,15 +142,10 @@ public class Test implements EntryPoint {
         refreshPrice();
     }
 
-    private ITestAsync moneyPriceSvc;
-
     private void refreshPrice() {
-
-        // lazy initialization of service proxy
-        if (moneyPriceSvc == null) {
-            moneyPriceSvc = GWT.create(ITest.class);
-        }
-        AsyncCallback <ArrayList> callback = new AsyncCallback<ArrayList>() {
+    	createPriceService();
+       
+    	AsyncCallback <ArrayList<MoneyPrice>> callback = new AsyncCallback<ArrayList<MoneyPrice>>() {
             public void onFailure(Throwable caught) {
                 String details = caught.getMessage();
                 if (caught instanceof PriceNotEvalExp) {
@@ -134,7 +157,7 @@ public class Test implements EntryPoint {
                 errorMsgLabel.setText("Error: " + details);
                 errorMsgLabel.setVisible(true);
             }
-			public void onSuccess(ArrayList prices) {
+			public void onSuccess(ArrayList<MoneyPrice> prices) {
 				// TODO Auto-generated method stub
 				updateTable(prices);
 				System.out.println(prices.size());
@@ -162,17 +185,20 @@ public class Test implements EntryPoint {
             String priceUSDBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdBuy());
             String priceUSDSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceUsdSell());
             String changeUSD = changeFormat.format(bankPrice.getChangeUsd());
-            String changeUsdPercent = changeFormat.format(bankPrice.getPriceUsdSell().divide(bankPrice.getChangeUsd(), 3, RoundingMode.HALF_UP));
+            String changeUsdPercent = (bankPrice.getChangeUsd().compareTo(BigDecimal.ZERO) == 1)?"0":
+            	changeFormat.format(bankPrice.getPriceUsdSell().divide(bankPrice.getChangeUsd(), 3, RoundingMode.HALF_UP));
 
             String priceEurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurBuy());
             String priceEurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceEurSell());
             String changeEur = changeFormat.format(bankPrice.getChangeEur());
-            String changeEurPercent = changeFormat.format(bankPrice.getPriceEurSell().divide(bankPrice.getChangeEur(), 3, RoundingMode.HALF_UP));
+            String changeEurPercent = (bankPrice.getChangeEur().compareTo(BigDecimal.ZERO) == 1)?"0":
+            	changeFormat.format(bankPrice.getPriceEurSell().divide(bankPrice.getChangeEur(), 3, RoundingMode.HALF_UP));
             
             String priceRurBuy = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurBuy());
             String priceRurSell = NumberFormat.getFormat("#,##0.00").format(bankPrice.getPriceRurSell());
             String changeRur = changeFormat.format(bankPrice.getChangeRur());
-            String changeRurPercent = changeFormat.format(bankPrice.getPriceRurSell().divide(bankPrice.getChangeRur(), 3, RoundingMode.HALF_UP));
+            String changeRurPercent = (bankPrice.getChangeRur().compareTo(BigDecimal.ZERO) == 1)?"0":
+            	changeFormat.format(bankPrice.getPriceRurSell().divide(bankPrice.getChangeRur(), 3, RoundingMode.HALF_UP));
 
             // update the watch list with the new values
             stocksFlexTable.setText(row, 1, priceUSDBuy);
@@ -188,5 +214,17 @@ public class Test implements EntryPoint {
             stocksFlexTable.setText(row, 9, changeRur + " (" + changeRurPercent + "%)");
     	}
         errorMsgLabel.setVisible(false);
+    }
+    
+    private Hashtable<String, String> getBanksList() {
+		return null;
+    	
+    }
+    
+    private void createPriceService(){
+    	// lazy initialization of service proxy 
+    	if (moneyPriceSvc == null) {
+             moneyPriceSvc = GWT.create(ITest.class);
+        }
     }
 }

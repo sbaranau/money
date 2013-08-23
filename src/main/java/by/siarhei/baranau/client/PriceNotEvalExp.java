@@ -11,7 +11,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class PriceNotEvalExp extends Exception implements IsSerializable {
 
-    private String symbol;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4116018838398344806L;
+	private String symbol;
     public PriceNotEvalExp() {
     }
     public PriceNotEvalExp(String symbol) {
