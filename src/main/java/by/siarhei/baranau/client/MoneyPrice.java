@@ -1,5 +1,8 @@
 package by.siarhei.baranau.client;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -11,143 +14,102 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class MoneyPrice implements IsSerializable {
 
-	private double bankName;
-	private double priceUsdBuy;
-    private double priceUsdSell;
-    private double changeUsd;
-    private double priceEurBuy;
-    private double priceEurSell;
-    private double changeEur;
-    private double priceRurBuy;
-    private double priceRurSell;
-    private double changeRur;
+	private int bankName;
+	private int date;
+	private int time;
+	private BigDecimal priceUsdBuy;
+    private BigDecimal priceUsdSell;
+    private BigDecimal changeUsd;
+    private BigDecimal priceEurBuy;
+    private BigDecimal priceEurSell;
+    private BigDecimal changeEur;
+    private BigDecimal priceRurBuy;
+    private BigDecimal priceRurSell;
+    private BigDecimal changeRur;
 
 
-    public MoneyPrice(double priceUsdBuy, double priceUsdSell,
-			double changeUsd, double priceEurBuy, double priceEurSell,
-			double changeEur, double priceRurBuy, double priceRurSell,
-			double changeRur) {
-		super();
-		this.priceUsdBuy = priceUsdBuy;
-		this.priceUsdSell = priceUsdSell;
-		this.changeUsd = changeUsd;
-		this.priceEurBuy = priceEurBuy;
-		this.priceEurSell = priceEurSell;
-		this.changeEur = changeEur;
-		this.priceRurBuy = priceRurBuy;
-		this.priceRurSell = priceRurSell;
-		this.changeRur = changeRur;
-	}
     
-
-	public MoneyPrice(double bankName, double priceUsdBuy, double priceUsdSell,
-			double changeUsd, double priceEurBuy, double priceEurSell,
-			double changeEur, double priceRurBuy, double priceRurSell,
-			double changeRur) {
-		super();
-		this.bankName = bankName;
-		this.priceUsdBuy = priceUsdBuy;
-		this.priceUsdSell = priceUsdSell;
-		this.changeUsd = changeUsd;
-		this.priceEurBuy = priceEurBuy;
-		this.priceEurSell = priceEurSell;
-		this.changeEur = changeEur;
-		this.priceRurBuy = priceRurBuy;
-		this.priceRurSell = priceRurSell;
-		this.changeRur = changeRur;
-	}
-
-
-	public double getPriceUsdBuy() {
+    public BigDecimal getPriceUsdBuy() {
 		return priceUsdBuy;
 	}
-
-	public void setPriceUsdBuy(double priceUsdBuy) {
+	public void setPriceUsdBuy(BigDecimal priceUsdBuy) {
 		this.priceUsdBuy = priceUsdBuy;
 	}
-
-	public double getPriceUsdSell() {
+	public BigDecimal getPriceUsdSell() {
 		return priceUsdSell;
 	}
-
-	public void setPriceUsdSell(double priceUsdSell) {
+	public void setPriceUsdSell(BigDecimal priceUsdSell) {
 		this.priceUsdSell = priceUsdSell;
 	}
-
-	public double getChangeUsd() {
+	public BigDecimal getChangeUsd() {
 		return changeUsd;
 	}
-
-	public void setChangeUsd(double changeUsd) {
+	public void setChangeUsd(BigDecimal changeUsd) {
 		this.changeUsd = changeUsd;
 	}
-
-	public double getPriceEurBuy() {
+	public BigDecimal getPriceEurBuy() {
 		return priceEurBuy;
 	}
-
-	public void setPriceEurBuy(double priceEurBuy) {
+	public void setPriceEurBuy(BigDecimal priceEurBuy) {
 		this.priceEurBuy = priceEurBuy;
 	}
-
-	public double getPriceEurSell() {
+	public BigDecimal getPriceEurSell() {
 		return priceEurSell;
 	}
-
-	public void setPriceEurSell(double priceEurSell) {
+	public void setPriceEurSell(BigDecimal priceEurSell) {
 		this.priceEurSell = priceEurSell;
 	}
-
-	public double getChangeEur() {
+	public BigDecimal getChangeEur() {
 		return changeEur;
 	}
-
-	public void setChangeEur(double changeEur) {
+	public void setChangeEur(BigDecimal changeEur) {
 		this.changeEur = changeEur;
 	}
-
-	public double getPriceRurBuy() {
+	public BigDecimal getPriceRurBuy() {
 		return priceRurBuy;
 	}
-
-	public void setPriceRurBuy(double priceRurBuy) {
+	public void setPriceRurBuy(BigDecimal priceRurBuy) {
 		this.priceRurBuy = priceRurBuy;
 	}
-
-	public double getPriceRurSell() {
+	public BigDecimal getPriceRurSell() {
 		return priceRurSell;
 	}
-
-	public void setPriceRurSell(double priceRurSell) {
+	public void setPriceRurSell(BigDecimal priceRurSell) {
 		this.priceRurSell = priceRurSell;
 	}
-
-	public double getChangeRur() {
+	public BigDecimal getChangeRur() {
 		return changeRur;
 	}
-
-	public void setChangeRur(double changeRur) {
+	public void setChangeRur(BigDecimal changeRur) {
 		this.changeRur = changeRur;
 	}
-
-	public MoneyPrice() {
+	public void setBankName(int bankName) {
+		this.bankName = bankName;
+	}
+	public BigDecimal getChangePercentUsd() {
+        return this.changeUsd.divide(this.priceUsdBuy, 3, RoundingMode.HALF_DOWN);
     }
-
-    public double getChangePercentUsd() {
-        return 10.0 * this.changeUsd / this.priceUsdBuy;
+    public BigDecimal getChangePercentEur() {
+        return this.changeEur.divide(this.priceEurBuy, 3, RoundingMode.HALF_DOWN);
     }
-    public double getChangePercentEur() {
-        return 10.0 * this.changeEur / this.priceEurBuy;
-    }
-    public double getChangePercentRur() {
-        return 10.0 * this.changeRur / this.priceRurBuy;
+    public BigDecimal getChangePercentRur() {
+        return this.changeRur.divide(this.priceRurBuy, 3, RoundingMode.HALF_DOWN);
     }
 	public double getBankName() {
 		return bankName;
 	}
-
-	public void setBankName(double bankName) {
-		this.bankName = bankName;
+	public int getDate() {
+		return date;
 	}
+	public void setDate(int date) {
+		this.date = date;
+	}
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
+	}
+
 
 }

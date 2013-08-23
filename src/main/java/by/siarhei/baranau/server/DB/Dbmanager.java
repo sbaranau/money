@@ -3,6 +3,7 @@ package by.siarhei.baranau.server.DB;
 import by.siarhei.baranau.client.MoneyPrice;
 import by.siarhei.baranau.server.Entity.Money;
 
+import java.math.BigDecimal;
 import java.sql.*;
 
 /**
@@ -26,8 +27,6 @@ public class Dbmanager {
                     "VALUES (?,?,?,?,?,?,?,?,?) ";
             } else if (step == 2) {
             	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY DATE DESC";
-            } else if (step == 3) {
-            	 sql = "SELECT bankId FROM PRICE WHERE bankId=? AND DATE=? AND TIME=?";
             }
             preparedStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
@@ -37,8 +36,11 @@ public class Dbmanager {
 
     public MoneyPrice getDate (String bank) throws SQLException{
         MoneyPrice moneyPrice = null;
-        Statement statement = null;
         ResultSet rs = null; 
+        BigDecimal previosUsd = BigDecimal.ONE;
+        BigDecimal previosEur = BigDecimal.ONE;
+        BigDecimal previosRur = BigDecimal.ONE;
+        
         try{
              System.out.println("Get prices for: " + bank);
              preparedStatement.setString(1, bank);
@@ -46,7 +48,22 @@ public class Dbmanager {
              int count = 0;
              while (rs.next()) {
             	 count ++;
-            	// moneyPrice.setPriceEurSell(rs.getBigDecimal(""));
+            	 if (count == 1) {
+            		 moneyPrice.setBankName(rs.getInt("bankId"));
+                	 moneyPrice.setDate(rs.getInt("bankId"));
+                	 moneyPrice.setTime(rs.getInt("time"));
+                	 previosEur = rs.getBigDecimal("selleur");
+                	 previosRur = rs.getBigDecimal("sellrur");
+                	 previosUsd = rs.getBigDecimal("sellusd");
+
+            	 }
+            	 moneyPrice.setPriceEurSell(rs.getBigDecimal("selleur"));
+            	 moneyPrice.setPriceEurBuy(rs.getBigDecimal("buyeur"));
+            	 moneyPrice.setPriceUsdSell(rs.getBigDecimal("sellusd"));
+            	 moneyPrice.setPriceUsdBuy(rs.getBigDecimal("buyusd"));
+            	 moneyPrice.setPriceRurSell(rs.getBigDecimal("sellrur"));
+            	 moneyPrice.setPriceRurBuy(rs.getBigDecimal("buyeur"));
+            	 
             	 if (count > 2) {
             		 break;
             	 }
@@ -55,8 +72,8 @@ public class Dbmanager {
          } catch (SQLException e) {
         		 e.printStackTrace();
          } finally {
-        	 if (statement != null) {
-                 statement.close();
+        	 if (preparedStatement != null) {
+        		 preparedStatement.close();
              }
         	 if (rs != null) {
                  rs.close();
@@ -66,7 +83,6 @@ public class Dbmanager {
     }
     
     public boolean saveInBase(Money money) throws SQLException {
-        Statement statement = null;
         boolean result = false;
         if (dateExist(money)) {
         	return false;
@@ -88,21 +104,22 @@ public class Dbmanager {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (statement != null) {
-                statement.close();
+            if (preparedStatement != null) {
+            	preparedStatement.close();
             }
         }
         return result;
     }
     
     private boolean dateExist(Money money) throws SQLException {
-    	Statement statement = null;
         ResultSet rs = null;
-        try {
-	    	preparedStatement.setInt(1, money.getBankId());
-	        preparedStatement.setInt(2, money.getDate());
-	        preparedStatement.setInt(3, money.getTime());
-	        rs = preparedStatement.executeQuery();
+       	Statement stmt = null;
+        String sql = "SELECT bankId FROM PRICE WHERE bankId=" + money.getBankId()
+        		+ " AND DATE= " + money.getDate()
+        		+ " AND TIME=" + money.getTime();
+       	try {
+           	stmt = connection.createStatement();
+       		rs = stmt.executeQuery(sql);
 	        if (rs.next()) {
 	        	return true;
 	        } else {
@@ -112,8 +129,8 @@ public class Dbmanager {
         	e.printStackTrace();
         	return false;
         } finally {
-	       	 if (statement != null) {
-	             statement.close();
+	       	 if (stmt != null) {
+	       		stmt.close();
 	         }
 	    	 if (rs != null) {
 	             rs.close();
