@@ -29,7 +29,10 @@ public class MoneyPrice implements IsSerializable {
 
 
     
-    public BigDecimal getPriceUsdBuy() {
+    public MoneyPrice() {
+		super();
+	}
+	public BigDecimal getPriceUsdBuy() {
 		return priceUsdBuy;
 	}
 	public void setPriceUsdBuy(BigDecimal priceUsdBuy) {
@@ -95,7 +98,7 @@ public class MoneyPrice implements IsSerializable {
     public BigDecimal getChangePercentRur() {
         return this.changeRur.divide(this.priceRurBuy, 3, RoundingMode.HALF_DOWN);
     }
-	public double getBankName() {
+	public int getBankName() {
 		return bankName;
 	}
 	public int getDate() {

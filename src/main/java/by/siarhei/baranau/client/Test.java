@@ -85,11 +85,11 @@ public class Test implements EntryPoint {
         final String symbol = newSymbolTextBox.getText().toUpperCase().trim();
         newSymbolTextBox.setFocus(true);
         // symbol must be 3 chars that are numbers, letters, or dots
-        if (!symbol.matches("^[a-zA-Z\\.]{3}$")) {
+     /*   if (!symbol.matches("^[a-zA-Z\\.]{3}$")) {
             Window.alert("'" + symbol + "' is not a valid bank.");
             newSymbolTextBox.selectAll();
             return;
-        }
+        }*/
         if (moneyList.contains(symbol)) {
             Window.alert("'" + symbol + "' is allready in list");
             newSymbolTextBox.selectAll();

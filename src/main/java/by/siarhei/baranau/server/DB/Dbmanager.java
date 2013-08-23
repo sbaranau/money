@@ -25,17 +25,18 @@ public class Dbmanager {
             	sql = "INSERT INTO PRICE " +
                     "(bankId,date,time,sellusd,buyusd,selleur,buyeur,sellrur,buyrur) " +
                     "VALUES (?,?,?,?,?,?,?,?,?) ";
+            	preparedStatement = connection.prepareStatement(sql);
             } else if (step == 2) {
-            	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY DATE DESC";
+            	sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY date DESC, time DESC";
+            	preparedStatement = connection.prepareStatement(sql);
             }
-            preparedStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public MoneyPrice getDate (String bank) throws SQLException{
-        MoneyPrice moneyPrice = null;
+        MoneyPrice moneyPrice = new MoneyPrice();
         ResultSet rs = null; 
         BigDecimal previosUsd = BigDecimal.ONE;
         BigDecimal previosEur = BigDecimal.ONE;
@@ -52,18 +53,20 @@ public class Dbmanager {
             		 moneyPrice.setBankName(rs.getInt("bankId"));
                 	 moneyPrice.setDate(rs.getInt("bankId"));
                 	 moneyPrice.setTime(rs.getInt("time"));
-                	 previosEur = rs.getBigDecimal("selleur");
+                	 moneyPrice.setPriceEurSell(rs.getBigDecimal("selleur"));
+                	 moneyPrice.setPriceEurBuy(rs.getBigDecimal("buyeur"));
+                	 moneyPrice.setPriceUsdSell(rs.getBigDecimal("sellusd"));
+                	 moneyPrice.setPriceUsdBuy(rs.getBigDecimal("buyusd"));
+                	 moneyPrice.setPriceRurSell(rs.getBigDecimal("sellrur"));
+                	 moneyPrice.setPriceRurBuy(rs.getBigDecimal("buyeur"));
+            	 } else {
+            		 previosEur = rs.getBigDecimal("selleur");
                 	 previosRur = rs.getBigDecimal("sellrur");
                 	 previosUsd = rs.getBigDecimal("sellusd");
-
             	 }
-            	 moneyPrice.setPriceEurSell(rs.getBigDecimal("selleur"));
-            	 moneyPrice.setPriceEurBuy(rs.getBigDecimal("buyeur"));
-            	 moneyPrice.setPriceUsdSell(rs.getBigDecimal("sellusd"));
-            	 moneyPrice.setPriceUsdBuy(rs.getBigDecimal("buyusd"));
-            	 moneyPrice.setPriceRurSell(rs.getBigDecimal("sellrur"));
-            	 moneyPrice.setPriceRurBuy(rs.getBigDecimal("buyeur"));
-            	 
+            	 moneyPrice.setChangeEur(moneyPrice.getPriceEurSell().subtract(previosEur));
+            	 moneyPrice.setChangeUsd(moneyPrice.getPriceUsdSell().subtract(previosUsd));
+            	 moneyPrice.setChangeRur(moneyPrice.getPriceRurSell().subtract(previosRur));
             	 if (count > 2) {
             		 break;
             	 }
@@ -79,7 +82,7 @@ public class Dbmanager {
                  rs.close();
              }
          }
-    	return  null;
+    	return  moneyPrice;
     }
     
     public boolean saveInBase(Money money) throws SQLException {

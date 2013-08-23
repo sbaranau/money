@@ -29,7 +29,7 @@ public class Connector {
 
         try {
             connection = DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/osdbm", "user", "user");
+                    .getConnection("jdbc:mysql://localhost:3306/osdbm", "root", "11341003");
 
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");

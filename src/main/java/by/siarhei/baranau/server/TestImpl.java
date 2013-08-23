@@ -28,12 +28,9 @@ import com.mysql.jdbc.Connection;
 @SuppressWarnings("serial")
 public class TestImpl extends RemoteServiceServlet implements ITest {
 
-    private static final double MAX_PRICE = 100.0; // $100.00
-    private static final double MAX_PRICE_CHANGE = 0.02; // +/- 2%
     private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
     public ArrayList<MoneyPrice> getPrices(String[] bank) throws PriceNotEvalExp {
-        Random rnd = new Random();
         getXml();
         ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
         for (int i = 0; i < bank.length; i++) {
@@ -44,8 +41,6 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        	double price = rnd.nextDouble() * MAX_PRICE;
-            double change = price * MAX_PRICE_CHANGE * (rnd.nextDouble() * 2f - 1f);
         }
         return prices;
     }
@@ -62,9 +57,4 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
         }
     }
     
-    private MoneyPrice getPriceFromBd (String bank) {
-		Connection connection;
-    	return null;
-    
-    }
 }
