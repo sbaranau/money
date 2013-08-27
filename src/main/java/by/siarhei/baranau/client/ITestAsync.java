@@ -1,12 +1,12 @@
 package by.siarhei.baranau.client;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ITestAsync {
     void getPrices(String[] symbols, AsyncCallback<ArrayList<MoneyPrice>> async);
 
-	void getBanks(AsyncCallback<Hashtable<String, String>> callback);
+	void getBanks(AsyncCallback<HashMap<String, String>> callback);
 }

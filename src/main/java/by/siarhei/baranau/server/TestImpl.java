@@ -6,11 +6,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import by.siarhei.baranau.client.ITest;
 import by.siarhei.baranau.client.MoneyPrice;
-import by.siarhei.baranau.client.PriceNotEvalExp;
 import by.siarhei.baranau.server.DB.Dbmanager;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -23,7 +22,7 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
 
     private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
-    public ArrayList<MoneyPrice> getPrices(String[] bank) throws PriceNotEvalExp {
+    public ArrayList<MoneyPrice> getPrices(String[] bank) {
         getXml();
         ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
         for (int i = 0; i < bank.length; i++) {
@@ -49,10 +48,23 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-
-	public Hashtable<String, String> getBanks() {
-		// TODO Auto-generated method stub
-		return null;
-	}
     
+    private MoneyPrice getDate(String bank) {
+    	
+    	return null;
+    }
+
+	public HashMap<String, String> getBanks() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		Dbmanager dbmanager = new Dbmanager(3);
+		try {
+			map = dbmanager.getBanks();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// TODO Auto-generated method stub
+		return map;
+	}
 }

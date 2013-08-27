@@ -1,10 +1,15 @@
 package by.siarhei.baranau.server.DB;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+
 import by.siarhei.baranau.client.MoneyPrice;
 import by.siarhei.baranau.server.Entity.Money;
-
-import java.math.BigDecimal;
-import java.sql.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,7 +63,7 @@ public class Dbmanager {
                 	 moneyPrice.setPriceUsdSell(rs.getBigDecimal("sellusd"));
                 	 moneyPrice.setPriceUsdBuy(rs.getBigDecimal("buyusd"));
                 	 moneyPrice.setPriceRurSell(rs.getBigDecimal("sellrur"));
-                	 moneyPrice.setPriceRurBuy(rs.getBigDecimal("buyeur"));
+                	 moneyPrice.setPriceRurBuy(rs.getBigDecimal("buyrur"));
             	 } else {
             		 previosEur = rs.getBigDecimal("selleur");
                 	 previosRur = rs.getBigDecimal("sellrur");
@@ -141,5 +146,29 @@ public class Dbmanager {
         }
     }
     
+    public HashMap<String, String> getBanks() throws SQLException {
+        ResultSet rs = null;
+       	Statement stmt = null;
+        HashMap<String, String> banksMap = new HashMap<String, String>();
+       	String sql = "SELECT * FROM bank";
+       	try {
+           	stmt = connection.createStatement();
+       		rs = stmt.executeQuery(sql);
+	        while (rs.next()) {
+	        	banksMap.put(String.valueOf(rs.getInt("idbank")), rs.getString("namebank"));
+	        }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        	return null;
+        } finally {
+	       	 if (stmt != null) {
+	       		stmt.close();
+	         }
+	    	 if (rs != null) {
+	             rs.close();
+	         }
+        }
+    return banksMap;
+    }
 
 }

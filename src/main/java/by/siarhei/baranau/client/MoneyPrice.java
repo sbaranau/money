@@ -30,7 +30,7 @@ public class MoneyPrice implements IsSerializable {
 
     
     public MoneyPrice() {
-		super();
+	 super();
 	}
 	public BigDecimal getPriceUsdBuy() {
 		return priceUsdBuy;
