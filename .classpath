@@ -34,5 +34,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/siarheybaranau/Documents/EclipseWorkspace/money/src/main/resources/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-graphics-1.0.0.jar"/>
 	<classpathentry kind="output" path="target/money-1.0/WEB-INF/classes"/>
 </classpath>

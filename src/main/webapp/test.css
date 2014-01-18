@@ -13,4 +13,31 @@ h1 {
 .errorMessage {
     color: Red;
 }
+.watchListHeader {
+  background-color: #2062B8;
+  color: white;
+  font-style: italic;
+}
+/* stock list flex table */
+.watchList {
+  border: 1px solid silver;
+  padding: 2px;
+  margin-bottom:6px;
+}
+/* stock list Price and Change fields */
+.watchListNumericColumn {
+  text-align: right;
+  width:8em;
+}
+/* Dynamic color changes for the Change field */
+.noChange {
+  color: black;
+}
 
+.positiveChange {
+  color: green;
+}
+
+.negativeChange {
+  color: red;
+}

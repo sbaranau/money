@@ -42,16 +42,18 @@ public class Dbmanager {
 
     public MoneyPrice getDate (String bank) throws SQLException{
         MoneyPrice moneyPrice = new MoneyPrice();
+        moneyPrice.setPriceEurSell(BigDecimal.ZERO);
+        moneyPrice.setPriceUsdSell(BigDecimal.ZERO);
+        moneyPrice.setPriceRurSell(BigDecimal.ZERO);
         ResultSet rs = null; 
         BigDecimal previosUsd = BigDecimal.ONE;
         BigDecimal previosEur = BigDecimal.ONE;
         BigDecimal previosRur = BigDecimal.ONE;
-        
+        int count = 0;
         try{
              System.out.println("Get prices for: " + bank);
              preparedStatement.setString(1, bank);
              rs = preparedStatement.executeQuery();
-             int count = 0;
              while (rs.next()) {
             	 count ++;
             	 if (count == 1) {
@@ -87,7 +89,18 @@ public class Dbmanager {
                  rs.close();
              }
          }
-    	return  moneyPrice;
+        if (count == 0) {
+        	moneyPrice.setBankName(0);
+       	 	moneyPrice.setDate(rs.getInt(0));
+       	 	moneyPrice.setTime(0);
+       	 	moneyPrice.setPriceEurSell(BigDecimal.ZERO);
+       	 	moneyPrice.setPriceEurBuy(BigDecimal.ZERO);
+       	 	moneyPrice.setPriceUsdSell(BigDecimal.ZERO);
+       	 	moneyPrice.setPriceUsdBuy(BigDecimal.ZERO);
+       	 	moneyPrice.setPriceRurSell(BigDecimal.ZERO);
+       	 	moneyPrice.setPriceRurBuy(BigDecimal.ZERO);
+        }
+        return  moneyPrice;
     }
     
     public boolean saveInBase(Money money) throws SQLException {
@@ -150,7 +163,7 @@ public class Dbmanager {
         ResultSet rs = null;
        	Statement stmt = null;
         HashMap<String, String> banksMap = new HashMap<String, String>();
-       	String sql = "SELECT * FROM bank";
+       	String sql = "SELECT * FROM bank ORDER BY idbank";
        	try {
            	stmt = connection.createStatement();
        		rs = stmt.executeQuery(sql);
