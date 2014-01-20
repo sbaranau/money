@@ -24,9 +24,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import org.vaadin.gwtgraphics.client.DrawingArea;
-import org.vaadin.gwtgraphics.client.shape.Circle;
+import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
+import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.LineChart;
+import com.google.gwt.visualization.client.visualizations.LineChart.Options;
+import com.google.gwt.visualization.client.visualizations.PieChart;
 
 public class Test implements EntryPoint {
 
@@ -34,16 +37,35 @@ public class Test implements EntryPoint {
     private VerticalPanel mainPanel = new VerticalPanel();
     private FlexTable stocksFlexTable = new FlexTable();
     private HorizontalPanel addPanel = new HorizontalPanel();
-    private DrawingArea graphicModul = new DrawingArea(300, 300);
+    private HorizontalPanel chartPanel = new HorizontalPanel();
+    private VerticalPanel actionPanel = new VerticalPanel();
+    private HorizontalPanel graphicOptionsPanel = new HorizontalPanel();
     private Button addButton = new Button("Add");
+    private Button graphicButton = new Button();
+    private boolean showGraphic = false;
     private Label lastUpdatedLabel = new Label();
     private ArrayList<String> moneyList = new ArrayList<String>();
     private static final int REFRESH_INTERVAL = 50000;
     private Label errorMsgLabel = new Label();
     final ListBox dropBox = new ListBox(false);
+    final ListBox dropBoxMoney = new ListBox(false);
+    final ListBox dropBoxPeriod = new ListBox(false);
 
     private ITestAsync moneyPriceSvc;
     
+    {
+    	dropBoxMoney.addItem("USD", "U");
+    	dropBoxMoney.addItem("EUR", "E");
+    	dropBoxMoney.addItem("RUR", "R");
+    	
+    	dropBoxPeriod.addItem("week", "w");
+    	dropBoxPeriod.addItem("mounth", "m");
+    	dropBoxPeriod.addItem("year", "y");
+    	
+    	graphicOptionsPanel.add(dropBoxMoney);
+    	graphicOptionsPanel.add(dropBoxPeriod);
+    	graphicOptionsPanel.add(graphicButton);
+    }
     public void onModuleLoad() {
 
         Timer refreshTimer = new Timer() {
@@ -51,7 +73,13 @@ public class Test implements EntryPoint {
                 refreshPrice();
             }
         };
-     //   RootPanel.get().add(createChart()); 
+        Runnable onLoadCallback = new Runnable() {
+            public void run() {
+            LineChart lineChart = getLineChart();
+            chartPanel.add(lineChart);
+            }
+         };
+
         stocksFlexTable.setText(0, 0, "Bank");
         stocksFlexTable.setText(0, 1, "USD sell");
         stocksFlexTable.setText(0, 2, "USD buy");
@@ -70,6 +98,20 @@ public class Test implements EntryPoint {
                 addMoney();
             }
         });
+        graphicButton.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				if (showGraphic == false) {
+					showGraphic = true;
+					graphicButton.setText("Hide graphic");
+				} else {
+					showGraphic = false;
+					graphicButton.setText("Show graphic");
+				}
+			}
+		});
+        
+        actionPanel.add(graphicOptionsPanel);
         createPriceService();
         moneyPriceSvc.getBanks(new AsyncCallback<HashMap<String, String>>() {
             public void onFailure(Throwable caught) {
@@ -97,13 +139,14 @@ public class Test implements EntryPoint {
         mainPanel.add(stocksFlexTable);
         mainPanel.add(addPanel);
         mainPanel.add(lastUpdatedLabel);
-        Circle circle = new Circle(100, 100, 50);
-        circle.setFillColor("red");
-        graphicModul.add(circle);
-        mainPanel.add(dropBox);
-        mainPanel.add(graphicModul);
+       // mainPanel.add(dropBox);
+        mainPanel.add(chartPanel);
         RootPanel.get("stockList").add(mainPanel);
-    //    RootPanel.get("stockList").add(createChart());
+        RootPanel.get("stockList").add(actionPanel);
+     // Load the visualization api, passing the onLoadCallback to be called
+        // when loading is done.
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+
         refreshTimer.scheduleRepeating(REFRESH_INTERVAL);
     }
 
@@ -218,72 +261,29 @@ public class Test implements EntryPoint {
         }
     }
     
-  /*  public Chart createChart() {  
-    	  
-        final Chart chart = new Chart()  
-            .setType(Series.Type.LINE)  
-            .setMarginRight(130)  
-            .setMarginBottom(25)  
-            .setChartTitle(new ChartTitle()  
-                .setText("Monthly Average Temperature")  
-                .setX(-20)  // center  
-            )  
-            .setChartSubtitle(new ChartSubtitle()  
-                .setText("Source: WorldClimate.com")  
-                .setX(-20)  
-            )  
-            .setLegend(new Legend()  
-                .setLayout(Legend.Layout.VERTICAL)  
-                .setAlign(Legend.Align.RIGHT)  
-                .setVerticalAlign(Legend.VerticalAlign.TOP)  
-                .setX(-10)  
-                .setY(100)  
-                .setBorderWidth(0)  
-            )  
-            .setToolTip(new ToolTip()  
-                .setFormatter(new ToolTipFormatter() {  
-                    public String format(ToolTipData toolTipData) {  
-                        return "<b>" + toolTipData.getSeriesName() + "</b><br/>" +  
-                            toolTipData.getXAsString() + ": " + toolTipData.getYAsDouble() + "Â°C";  
-                    }  
-                })  
-            );  
-  
-        chart.getXAxis()  
-            .setCategories(  
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun",  
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"  
-            );  
-  
-        chart.getYAxis()  
-            .setAxisTitleText("Temperature Â°C");  
-  
-        chart.addSeries(chart.createSeries()  
-            .setName("Tokyo")  
-            .setPoints(new Number[]{  
-                7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6  
-            })  
-        );  
-        chart.addSeries(chart.createSeries()  
-            .setName("New York")  
-            .setPoints(new Number[]{  
-                -0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5  
-            })  
-        );  
-        chart.addSeries(chart.createSeries()  
-            .setName("Berlin")  
-            .setPoints(new Number[]{  
-                -0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0  
-            })  
-        );  
-        chart.addSeries(chart.createSeries()  
-            .setName("London")  
-            .setPoints(new Number[]{  
-                3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8  
-            })  
-        );  
-  
-        return chart;  
-    }  */
-  
+    private LineChart getLineChart() {
+    	
+    	DataTable data = DataTable.create();
+        data.addColumn(ColumnType.STRING, "X");
+        data.addColumn(ColumnType.NUMBER, "Chanel 1");
+        data.addColumn(ColumnType.NUMBER, "Channel 2");
+        data.addRows(2);
+        data.setValue(0, 0, "0");
+        data.setValue(0, 1, 0);
+        data.setValue(0, 2, 0);
+        data.setValue(1, 0, "1");
+        data.setValue(1, 1, 4);
+        data.setValue(1, 2, 1);
+
+        Options options = Options.create();
+        options.setWidth(1000);
+        options.setHeight(700);
+        options.setTitle("Test");
+        options.setEnableTooltip(false);
+        options.setPointSize(0);
+
+        LineChart pie = new LineChart(data, options);
+        return pie;
+    }
+    
 }
