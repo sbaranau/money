@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -26,7 +29,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.events.SelectHandler;
 import com.google.gwt.visualization.client.visualizations.LineChart;
 import com.google.gwt.visualization.client.visualizations.LineChart.Options;
 import com.google.gwt.visualization.client.visualizations.PieChart;
@@ -38,11 +43,11 @@ public class Test implements EntryPoint {
     private FlexTable stocksFlexTable = new FlexTable();
     private HorizontalPanel addPanel = new HorizontalPanel();
     private HorizontalPanel chartPanel = new HorizontalPanel();
-    private VerticalPanel actionPanel = new VerticalPanel();
-    private HorizontalPanel graphicOptionsPanel = new HorizontalPanel();
+    private HorizontalPanel actionPanel = new HorizontalPanel();//panel for buttons with extra functions
+    private HorizontalPanel graphicOptionsPanel = new HorizontalPanel(); //panel for graphic options
     private Button addButton = new Button("Add");
-    private Button graphicButton = new Button();
-    private boolean showGraphic = false;
+    private Button graphicButton = new Button("Refresh");
+    private LineChart pie = null;
     private Label lastUpdatedLabel = new Label();
     private ArrayList<String> moneyList = new ArrayList<String>();
     private static final int REFRESH_INTERVAL = 50000;
@@ -50,6 +55,7 @@ public class Test implements EntryPoint {
     final ListBox dropBox = new ListBox(false);
     final ListBox dropBoxMoney = new ListBox(false);
     final ListBox dropBoxPeriod = new ListBox(false);
+    private Calendar lCal = Calendar.getInstance();
 
     private ITestAsync moneyPriceSvc;
     
@@ -58,9 +64,11 @@ public class Test implements EntryPoint {
     	dropBoxMoney.addItem("EUR", "E");
     	dropBoxMoney.addItem("RUR", "R");
     	
-    	dropBoxPeriod.addItem("week", "w");
-    	dropBoxPeriod.addItem("mounth", "m");
-    	dropBoxPeriod.addItem("year", "y");
+    	dropBoxPeriod.addItem("<..>", "n");
+    	dropBoxPeriod.addItem("last week", "w");
+    	dropBoxPeriod.addItem("last mounth", "m");
+    	dropBoxPeriod.addItem("last quartal", "q");
+    	dropBoxPeriod.addItem("last year", "y");
     	
     	graphicOptionsPanel.add(dropBoxMoney);
     	graphicOptionsPanel.add(dropBoxPeriod);
@@ -71,12 +79,16 @@ public class Test implements EntryPoint {
         Timer refreshTimer = new Timer() {
             public void run() {
                 refreshPrice();
+                pie = getLineChart();
+                chartPanel.clear();
+            	chartPanel.add(pie);
             }
         };
         Runnable onLoadCallback = new Runnable() {
             public void run() {
-            LineChart lineChart = getLineChart();
-            chartPanel.add(lineChart);
+            	pie = getLineChart();
+            	chartPanel.clear();
+            	chartPanel.add(pie);
             }
          };
 
@@ -101,13 +113,10 @@ public class Test implements EntryPoint {
         graphicButton.addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				if (showGraphic == false) {
-					showGraphic = true;
-					graphicButton.setText("Hide graphic");
-				} else {
-					showGraphic = false;
-					graphicButton.setText("Show graphic");
-				}
+				refreshPrice();
+				pie = getLineChart();
+            	chartPanel.clear();
+            	chartPanel.add(pie);
 			}
 		});
         
@@ -139,10 +148,10 @@ public class Test implements EntryPoint {
         mainPanel.add(stocksFlexTable);
         mainPanel.add(addPanel);
         mainPanel.add(lastUpdatedLabel);
-       // mainPanel.add(dropBox);
-        mainPanel.add(chartPanel);
+        mainPanel.add(graphicOptionsPanel);
         RootPanel.get("stockList").add(mainPanel);
         RootPanel.get("stockList").add(actionPanel);
+        RootPanel.get("stockList").add(chartPanel);
      // Load the visualization api, passing the onLoadCallback to be called
         // when loading is done.
         VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
@@ -263,26 +272,52 @@ public class Test implements EntryPoint {
     
     private LineChart getLineChart() {
     	
-    	DataTable data = DataTable.create();
-        data.addColumn(ColumnType.STRING, "X");
-        data.addColumn(ColumnType.NUMBER, "Chanel 1");
-        data.addColumn(ColumnType.NUMBER, "Channel 2");
-        data.addRows(2);
-        data.setValue(0, 0, "0");
-        data.setValue(0, 1, 0);
-        data.setValue(0, 2, 0);
-        data.setValue(1, 0, "1");
-        data.setValue(1, 1, 4);
-        data.setValue(1, 2, 1);
+    	
+    	createPriceService();
+    	HashMap<String, String> prices = null;
+    	int moneySelect = dropBoxMoney.getSelectedIndex();
+    	final String money = dropBoxMoney.getItemText(moneySelect);
+    	System.out.println(moneySelect + ": " + money);
+    	AsyncCallback <LinkedHashMap<String, String>> callback = new AsyncCallback<LinkedHashMap<String, String>>() {
+            public void onFailure(Throwable caught) {
+                String details = caught.getMessage();
+                if (caught instanceof IOException) {
+                    details = "Service is not available. Try Later";
+                }
+                errorMsgLabel.setText("Error: " + details);
+                errorMsgLabel.setVisible(true);
+            }
+			public void onSuccess(LinkedHashMap<String, String> callBackprices) {
+				DataTable data = DataTable.create();
+		        data.addColumn(ColumnType.STRING, "Value");
+		        data.addColumn(ColumnType.NUMBER, money);
+		        data.addRows(callBackprices.size());
+		        int i = 0;
+		        for (String key : callBackprices.keySet()) {
+		        	String date = "";
+		        	date = key.substring(6,8);
+		        	date = date.concat("-");
+		        	date = date.concat(key.substring(4,6));
+		        	date = date.concat("-");
+		        	date = date.concat(key.substring(0,4));
+		        	data.setValue(i, 0, date);
+		        	data.setValue(i, 1, Integer.parseInt(callBackprices.get(key)));
+			        i++;
+		        }
+		        Options options = Options.create();
+		        options.setWidth(1000);
+		        options.setHeight(300);
+		        options.setEnableTooltip(false);
+		        options.setPointSize(0);
 
-        Options options = Options.create();
-        options.setWidth(1000);
-        options.setHeight(700);
-        options.setTitle("Test");
-        options.setEnableTooltip(false);
-        options.setPointSize(0);
-
-        LineChart pie = new LineChart(data, options);
+		        pie = new LineChart(data, options);
+			}
+        };
+        String date = "";
+        int startDate = lCal.get(Calendar.DAY_OF_MONTH);
+        startDate = startDate + lCal.get(Calendar.MONTH) * 10000;
+        startDate  = startDate + lCal.get(Calendar.YEAR) * 1000000;
+        moneyPriceSvc.getDateForMoney(money, date,date, callback);
         return pie;
     }
     

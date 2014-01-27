@@ -67,6 +67,11 @@
 			<artifactId>gwt-visualization</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.wicked-charts</groupId>
+			<artifactId>wicked-charts-highcharts</artifactId>
+			<version>1.5.0</version>
+		</dependency>
 
 	</dependencies>
 

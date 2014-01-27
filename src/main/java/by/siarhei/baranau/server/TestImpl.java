@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import by.siarhei.baranau.client.ITest;
 import by.siarhei.baranau.client.MoneyPrice;
@@ -56,7 +57,7 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
 
 	public HashMap<String, String> getBanks() {
 		HashMap<String, String> map = new HashMap<String, String>();
-		Dbmanager dbmanager = new Dbmanager(3);
+		Dbmanager dbmanager = new Dbmanager(4);
 		try {
 			map = dbmanager.getBanks();
 		} catch (SQLException e) {
@@ -66,5 +67,38 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
 
 		// TODO Auto-generated method stub
 		return map;
+	}
+
+	public HashMap<String, String> getDateForMoney() {
+		HashMap<String, String> data= new HashMap<String, String>();
+		
+		data.put("1","1");
+		data.put("2","56");
+		data.put("3","67");
+		data.put("4","15");
+		return data;
+	}
+
+	public LinkedHashMap<String, String> getDateForMoney(String money) {
+		LinkedHashMap<String, String> data= new LinkedHashMap<String, String>();
+		
+		data.put("1","1");
+		data.put("2","56");
+		data.put("3","67");
+		data.put("4","15");
+		return data;
+	}
+
+	public LinkedHashMap<String, String> getDateForMoney(String money,
+			String startDate, String finishDate) {
+		LinkedHashMap<String, String> data= new LinkedHashMap<String, String>();
+		Dbmanager dbmanager = new Dbmanager(3);
+		try {
+			data = dbmanager.getPriceList(money, startDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return data;
 	}
 }

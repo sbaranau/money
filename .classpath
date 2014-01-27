@@ -35,10 +35,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gwt-graphics-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-graphics-charts-0.1.jar"/>
-	<classpathentry kind="lib" path="lib/vaadin-charts-directorypackage-1.1.4/vaadin7/vaadin-charts-1.1.4.jar"/>
-	<classpathentry kind="lib" path="lib/vaadin-charts-directorypackage-1.1.4/vaadin7/lib/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/vaadin-charts-directorypackage-1.1.4/vaadin7/lib/gson-2.2.jar"/>
-	<classpathentry kind="lib" path="lib/vaadin-6.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/org.moxieapps.gwt.highcharts-1.5.0.jar"/>
 	<classpathentry kind="output" path="target/money-1.0/WEB-INF/classes"/>
 </classpath>
