@@ -34,7 +34,7 @@ public class Dbmanager {
 				sql = "SELECT * FROM PRICE WHERE bankId=? ORDER BY date DESC, time DESC";
 				preparedStatement = connection.prepareStatement(sql);
 			} else if (step == 3) {
-				sql = "SELECT date, sellusd, selleur,sellrur FROM PRICE WHERE bankId='1' AND date >=? ORDER BY date";
+				sql = "SELECT date, sellusd, selleur,sellrur FROM PRICE WHERE bankId='1' AND date >=?  AND date <=? ORDER BY date";
 				preparedStatement = connection.prepareStatement(sql);
 			}
 		} catch (SQLException e) {
@@ -84,7 +84,7 @@ public class Dbmanager {
 			moneyPrice.setChangeRur(moneyPrice.getPriceRurSell().subtract(
 					previosRur));
 			System.out.println(previosEur
-					+ moneyPrice.getPriceEurSell().toString());
+					+ String.valueOf(moneyPrice.getPriceEurSell()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -191,12 +191,13 @@ public class Dbmanager {
 		return banksMap;
 	}
 
-	public LinkedHashMap<String, String> getPriceList(String money, String date) throws SQLException {
+	public LinkedHashMap<String, String> getPriceList(String money, String dateFrom, String dateTo) throws SQLException {
 		ResultSet rs = null;
 		Statement stmt = null;
 		LinkedHashMap<String, String> moneyMap = new LinkedHashMap<String, String>();
 		try {
-			preparedStatement.setInt(1, Integer.parseInt("2014000"));
+			preparedStatement.setInt(1, Integer.parseInt(dateFrom));
+			preparedStatement.setInt(2, Integer.parseInt(dateTo));
 			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				if ("USD".equals(money)) {

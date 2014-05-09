@@ -11,11 +11,6 @@ public interface ITestAsync {
 
 	void getBanks(AsyncCallback<HashMap<String, String>> callback);
 
-	void getDateForMoney(AsyncCallback<HashMap<String, String>> callback);
-
-	void getDateForMoney(String money,
-			AsyncCallback<LinkedHashMap<String, String>> callback);
-
 	void getDateForMoney(String money, String startDate, String finishDate,
 			AsyncCallback<LinkedHashMap<String, String>> callback);
 }

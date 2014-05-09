@@ -21,41 +21,22 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class TestImpl extends RemoteServiceServlet implements ITest {
 
-    private static final String URL_OBMENNIK = "http://www.obmennik.by/xml/" ;
 
     public ArrayList<MoneyPrice> getPrices(String[] bank) {
-        getXml();
         ArrayList<MoneyPrice> prices = new ArrayList<MoneyPrice>();
         for (int i = 0; i < bank.length; i++) {
         	Dbmanager dbmanager = new Dbmanager(2);
         	try {
 				prices.add(dbmanager.getDate(bank[i]));
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				// TODO Auto-generated catch block USD
 				e.printStackTrace();
 			}
         }
         return prices;
     }
 
-    private void getXml() {
-
-        try {
-            URL url =  new URL(URL_OBMENNIK);
-            URLConnection conn = url.openConnection();
-            InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");
-            Parser.parseXml(inputStreamReader);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-    
-    private MoneyPrice getDate(String bank) {
-    	
-    	return null;
-    }
-
-	public HashMap<String, String> getBanks() {
+    public HashMap<String, String> getBanks() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		Dbmanager dbmanager = new Dbmanager(4);
 		try {
@@ -69,32 +50,12 @@ public class TestImpl extends RemoteServiceServlet implements ITest {
 		return map;
 	}
 
-	public HashMap<String, String> getDateForMoney() {
-		HashMap<String, String> data= new HashMap<String, String>();
-		
-		data.put("1","1");
-		data.put("2","56");
-		data.put("3","67");
-		data.put("4","15");
-		return data;
-	}
-
-	public LinkedHashMap<String, String> getDateForMoney(String money) {
-		LinkedHashMap<String, String> data= new LinkedHashMap<String, String>();
-		
-		data.put("1","1");
-		data.put("2","56");
-		data.put("3","67");
-		data.put("4","15");
-		return data;
-	}
-
 	public LinkedHashMap<String, String> getDateForMoney(String money,
 			String startDate, String finishDate) {
 		LinkedHashMap<String, String> data= new LinkedHashMap<String, String>();
-		Dbmanager dbmanager = new Dbmanager(3);
 		try {
-			data = dbmanager.getPriceList(money, startDate);
+			Dbmanager dbmanager = new Dbmanager(3);
+			data = dbmanager.getPriceList(money, startDate, finishDate);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

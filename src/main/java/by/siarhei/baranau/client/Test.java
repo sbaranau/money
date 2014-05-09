@@ -23,10 +23,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.Selection;
@@ -45,17 +47,23 @@ public class Test implements EntryPoint {
     private HorizontalPanel chartPanel = new HorizontalPanel();
     private HorizontalPanel actionPanel = new HorizontalPanel();//panel for buttons with extra functions
     private HorizontalPanel graphicOptionsPanel = new HorizontalPanel(); //panel for graphic options
+    private HorizontalPanel dateSelectPanel = new HorizontalPanel(); //panel for select date period
     private Button addButton = new Button("Add");
     private Button graphicButton = new Button("Refresh");
+    private InlineLabel labelFrom = new InlineLabel("Date from:");
+    private InlineLabel labelTo = new InlineLabel("Date to:");
+    private DateBox dateBoxFrom = new DateBox();
+    private DateBox dateBoxTo = new DateBox();
     private LineChart pie = null;
     private Label lastUpdatedLabel = new Label();
+    
     private ArrayList<String> moneyList = new ArrayList<String>();
     private static final int REFRESH_INTERVAL = 50000;
     private Label errorMsgLabel = new Label();
     final ListBox dropBox = new ListBox(false);
     final ListBox dropBoxMoney = new ListBox(false);
     final ListBox dropBoxPeriod = new ListBox(false);
-    private Calendar lCal = Calendar.getInstance();
+ //   private Calendar lCal = Calendar.getInstance();
 
     private ITestAsync moneyPriceSvc;
     
@@ -73,6 +81,10 @@ public class Test implements EntryPoint {
     	graphicOptionsPanel.add(dropBoxMoney);
     	graphicOptionsPanel.add(dropBoxPeriod);
     	graphicOptionsPanel.add(graphicButton);
+    	dateSelectPanel.add(labelFrom);
+    	dateSelectPanel.add(dateBoxFrom);
+    	dateSelectPanel.add(labelTo);
+    	dateSelectPanel.add(dateBoxTo);
     }
     public void onModuleLoad() {
 
@@ -121,6 +133,7 @@ public class Test implements EntryPoint {
 		});
         
         actionPanel.add(graphicOptionsPanel);
+        actionPanel.add(dateSelectPanel);
         createPriceService();
         moneyPriceSvc.getBanks(new AsyncCallback<HashMap<String, String>>() {
             public void onFailure(Throwable caught) {
@@ -208,7 +221,7 @@ public class Test implements EntryPoint {
         };
 
         moneyPriceSvc.getPrices(moneyList.toArray(new String[0]), callback);
-        // change the last update timestamp
+        // change the last update timestamp Get prices for
         lastUpdatedLabel.setText("Last update : " +
                 DateTimeFormat.getMediumDateTimeFormat().format(new Date()));
     }
@@ -274,7 +287,6 @@ public class Test implements EntryPoint {
     	
     	
     	createPriceService();
-    	HashMap<String, String> prices = null;
     	int moneySelect = dropBoxMoney.getSelectedIndex();
     	final String money = dropBoxMoney.getItemText(moneySelect);
     	System.out.println(moneySelect + ": " + money);
@@ -305,19 +317,44 @@ public class Test implements EntryPoint {
 			        i++;
 		        }
 		        Options options = Options.create();
-		        options.setWidth(1000);
-		        options.setHeight(300);
+		        options.setWidth(600);
+		        options.setHeight(150);
 		        options.setEnableTooltip(false);
 		        options.setPointSize(0);
 
 		        pie = new LineChart(data, options);
 			}
         };
-        String date = "";
-        int startDate = lCal.get(Calendar.DAY_OF_MONTH);
-        startDate = startDate + lCal.get(Calendar.MONTH) * 10000;
-        startDate  = startDate + lCal.get(Calendar.YEAR) * 1000000;
-        moneyPriceSvc.getDateForMoney(money, date,date, callback);
+        String dateFromValue = "0";
+        String dateToValue = "99999999";
+        Date dateFrom = dateBoxFrom.getValue();
+        Date dateTo = dateBoxTo.getValue();
+        DateTimeFormat dtf = DateTimeFormat.getFormat("yyyyMMdd");
+        if (dateFrom != null) {	
+        	dateFromValue = dtf.format(dateFrom);
+        	dropBoxPeriod.setItemSelected(1, true);
+        }
+        if (dateTo != null) {	
+        	dateToValue = dtf.format(dateTo);
+        	dropBoxPeriod.setItemSelected(1, true);
+        }
+        Date today = new Date();
+        long todayInMl = today.getTime();
+        int dateIndex = dropBoxMoney.getSelectedIndex();
+        long period = 0;
+        if ("w".equals(dropBoxMoney.getValue(dateIndex))) {
+        	period = 7 * 24 * 60 * 60 * 1000;
+        } else if ("m".equals(dropBoxMoney.getValue(dateIndex))) {
+        	period = 31 * 24 * 60 * 60 * 1000;
+        } else if ("q".equals(dropBoxMoney.getValue(dateIndex))) {
+        	period = 92 * 24 * 60 * 60 * 1000;
+        } else if ("y".equals(dropBoxMoney.getValue(dateIndex))) {
+        	period = 365 * 24 * 60 * 60 * 1000;
+        }
+        todayInMl = todayInMl - period;
+        today.setTime(todayInMl);
+        dateFromValue = dtf.format(today);
+        moneyPriceSvc.getDateForMoney(money, dateFromValue, dateToValue, callback);
         return pie;
     }
     

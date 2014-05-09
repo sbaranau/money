@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir=".">
+<path id="libs.dir">
+	<fileset dir="${basedir}/lib" includes="*.jar"/>
+    </path>
+<echo message="pulling in property files"/>
+<property file="axis_bujava.properties"/>
+	
+<echo message="calling the web services generation ant task: axis_bujava"/>
+ <target name="main" depends="compile" >
+		<echo message="task main"/>
+  </target>
+  <target name="compile" depends="clean" >
+		<mkdir dir="${basedir}/bin2"/>
+		<javac srcdir="${basedir}/src/by/baranau/searhei"
+		     destdir="${basedir}/bin2"
+               debug="false"
+               deprecation="true"
+               optimize="true" >
+            <classpath refid="libs.dir"/>
+        </javac>
+		<jar jarfile="moneyDB.jar">
+		    <fileset dir="${basedir}/bin2"/>
+         </jar>
+		<delete dir="${basedir}/bin2"/>
+  </target>
+  <target name="clean">
+		    
+		</target>
+</project>

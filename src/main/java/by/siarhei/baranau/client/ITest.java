@@ -14,7 +14,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface ITest extends RemoteService {
     ArrayList<MoneyPrice> getPrices(String[] symbols);
     HashMap<String, String> getBanks();
-    HashMap<String, String> getDateForMoney();
-    LinkedHashMap<String, String> getDateForMoney(String money);
     LinkedHashMap<String, String> getDateForMoney(String money,String startDate, String finishDate);
 }
